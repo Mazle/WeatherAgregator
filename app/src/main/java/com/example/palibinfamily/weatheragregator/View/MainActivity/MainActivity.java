@@ -24,19 +24,12 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        presenter = new MainActivityPresenter();
+        presenter = new MainActivityPresenter(this);
         viewPager = this.findViewById(R.id.mainActivityPager);
         MainViewPagerAdapter adapter = new MainViewPagerAdapter(getSupportFragmentManager());
         adapter.setContent();
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+
     }
 
 

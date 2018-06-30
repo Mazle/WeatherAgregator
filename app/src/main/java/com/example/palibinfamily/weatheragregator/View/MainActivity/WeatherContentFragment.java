@@ -29,7 +29,7 @@ public class WeatherContentFragment extends Fragment {
         return view;
     }
 
-    public void setTemperature(int temperature) {
-        this.temperature.setText();
-    }
+   // public void setTemperature(int temperature) {
+   //     this.temperature.setText();
+    //}
 }

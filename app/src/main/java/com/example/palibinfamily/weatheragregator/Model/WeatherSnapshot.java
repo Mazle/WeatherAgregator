@@ -21,7 +21,7 @@ public class WeatherSnapshot {
     protected String windDirection;
     protected int humidity;
     protected int pressure;
-    protected int cloudCover;
+    protected String cloudCover;
     protected GregorianCalendar date;
     protected boolean isRaining;
     protected boolean isSnowing;
@@ -66,7 +66,7 @@ public class WeatherSnapshot {
         this.pressure = pressure;
     }
 
-    public void setCloudCover(int cloudCover) {
+    public void setCloudCover(String cloudCover) {
         this.cloudCover = cloudCover;
     }
 
@@ -98,7 +98,7 @@ public class WeatherSnapshot {
         return pressure;
     }
 
-    public int getCloudCover() {
+    public String getCloudCover() {
         return cloudCover;
     }
 
@@ -106,8 +106,9 @@ public class WeatherSnapshot {
         return date;
     }
     public enum WindDirections {
+        //todo дописать методы извлечения названия из строкового ресурса.
             N {
-               String getStringId(Context context) {
+               String getStringName(Context context) {
                    return context.getResources().getString(R.string.w);
                 }
             },

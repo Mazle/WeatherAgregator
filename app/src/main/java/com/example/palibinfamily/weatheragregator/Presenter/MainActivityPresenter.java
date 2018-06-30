@@ -1,6 +1,7 @@
 package com.example.palibinfamily.weatheragregator.Presenter;
 
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 
 import com.example.palibinfamily.weatheragregator.Helpers.DateHelper;
 import com.example.palibinfamily.weatheragregator.Model.DAO.DAOFacade;
@@ -25,51 +26,78 @@ import java.util.Map;
 
 public class MainActivityPresenter {
     // Ключ - дата, в формате DateHelper.formatDMY(date)
-    private HashMap<String,ArrayList<WeatherSnapshot>> contentListFromSites;
-    private HashMap<String,WeatherSnapshot> weatherValues;
-
+    private HashMap<String,ArrayList<WeatherSnapshot>> contentMapFromSites;
+    private HashMap<String,WeatherSnapshot> averagedWeatherValues;
+    //карта соответствия порядкового номера дня соответствующей дате
+    private HashMap<Integer,String> stringDatesInWeatherValues = new HashMap<>();
     private AppCompatActivity view;
-    public MainActivityPresenter() {
 
+    public MainActivityPresenter(AppCompatActivity view) {
+        this.view = view;
+        //todo добавить настройку количества дней обзора
+        downloadWeatherValues(7);
     }
+
+    public ArrayList<WeatherSnapshot> getWeatherValuesList() {
+        ArrayList<WeatherSnapshot> list = new ArrayList<>();
+        for (Map.Entry<Integer,String> entry: stringDatesInWeatherValues.entrySet()) {
+            list.add(averagedWeatherValues.get(entry.getValue()));
+        }
+        return list;
+    }
+    public WeatherSnapshot getSnapshotFromDayNumber(int numb) {
+        return getWeatherValuesList().get(numb);
+    }
+
     //возвращает map с усредненными прогнозами для
     //todo Внедрить зависимости выдачи в активити от Локализации, Выбранных параметров отображения погоды, языка
-    public HashMap<String, WeatherSnapshot> getWeatherValues() {
+    private void downloadWeatherValues(int daysAmount) {
         //Парсим сайты, выбранные в настройках
-        initContentList();
+        initContentList(daysAmount);
         //усредняем результаты
-        getAverageValuesFromAllSnapshotsByDates(contentListFromSites);
-        return weatherValues;
+        getAverageValuesFromAllSnapshotsByDates(contentMapFromSites);
     }
-
-    //todo UPGRADE. Сделать настраиваемое количество дней в запросе.
-    private HashMap<String, ArrayList<WeatherSnapshot>> initContentList() {
-        if (contentListFromSites == null) contentListFromSites = new HashMap<>();
+    private HashMap<String, ArrayList<WeatherSnapshot>> initContentList(int daysAmount) {
+        if (contentMapFromSites == null) contentMapFromSites = new HashMap<>();
         //cчитываем заголовки сайтов, отмеченные чекбоксом true в настройках
         ArrayList<String> siteTitles = getSiteTitlesFromPreferences();
-        //Вызываем парсер, заполняющий weatherSnapshot для каждого дня из каждого источника источников, заносим в contentListFromSites
-        return getСontentFromSites(siteTitles);
+        //Вызываем парсер, заполняющий weatherSnapshot для каждого дня из каждого источника, заносим в contentListFromSites
+        return getСontentFromSites(siteTitles,daysAmount);
     }
-
     //Дает список выбранных в настройках сайтов в качестве источников
     private ArrayList<String> getSiteTitlesFromPreferences() {
         ArrayList<String> siteTitles = ((MyApp)view.getApplicationContext()).getPreferences().getCheckedTitles();
         return siteTitles;
     }
-    //Создает map по датам, заполняя значения list'ом из прогнозов по текущей дате
-    private HashMap<String,ArrayList<WeatherSnapshot>> getСontentFromSites(ArrayList<String> sitesTitles) {
+    //Создает map по датам, заполняя значения list'ом из прогнозов по текущей дате из разных сайтов
+    private HashMap<String,ArrayList<WeatherSnapshot>> getСontentFromSites(ArrayList<String> sitesTitles, int dayAmount) {
         GregorianCalendar date = new GregorianCalendar();
         date = DateHelper.formatDMY(date);
+        //todo BADPRACTICE.исправить через итераторы
+        //Знаю, что не good Practiсe , но вспоминать как работают итераторы времени нет
+        int iterationNumber = 0;
         for (String title : sitesTitles) {
-            //Todo РЕАЛИЗОВАТЬ. определить удобный способ и воткнуть подтягиватель данных о времени
-            //Заполняем map пустыми list
-            contentListFromSites.put(DateHelper.stringDMYFormat(date,"."), new ArrayList<WeatherSnapshot>());
-            //пустые list в map заполняем данными с сайтов по ключу даты формата string
-            contentListFromSites.get(date).add(DAOFacade.getWeatherFrom(title,date));
-            //todo ПРОВЕРИТЬ. Не выходит ли дата за 31 день месяца
-            date.add(date.DAY_OF_MONTH, date.DAY_OF_MONTH+1);
+            int daysCount = 0;
+            GregorianCalendar iteratorDate = DateHelper.getDMYCopy(date);
+            while (daysCount< dayAmount) {
+                //Todo РЕАЛИЗОВАТЬ. определить удобный способ и воткнуть подтягиватель данных о времени
+                //Заполняем map пустыми list
+                String dateKey = DateHelper.stringDMYFormat(iteratorDate, ".");
+                // задаем соответствие между порядковыми номероми в листе и значениями ключей в hashMap
+                //todo БАГФИКС.сделать так, чтобы данные не перезаписывались при каждой итерации
+                if (iterationNumber==0) {
+                    stringDatesInWeatherValues.put(daysCount, dateKey);
+                    contentMapFromSites.put(dateKey, new ArrayList<WeatherSnapshot>());
+                }
+                //пустые list в map заполняем данными с сайтов по ключу даты формата string
+                WeatherSnapshot snapshot = DAOFacade.getWeatherFrom(title,iteratorDate);
+                contentMapFromSites.get(dateKey).add(snapshot);
+                DateHelper.increaseDays(iteratorDate,1);
+                daysCount++;
+            }
+            iterationNumber++;
         }
-        return contentListFromSites;
+        return contentMapFromSites;
     }
    //вычисляет среднее значение для всех Snapshots в map
     private void getAverageValuesFromAllSnapshotsByDates(HashMap<String,ArrayList<WeatherSnapshot>> map) {
@@ -85,20 +113,33 @@ public class MainActivityPresenter {
                     agregator.isRaining.add(snapshot.isRaining());
                     agregator.isSnowing.add(snapshot.isSnowing());
                 }
-                weatherValues.put(entry.getKey(),agregator.averageToSnapshot(new WeatherSnapshot()));
+                if (averagedWeatherValues == null) averagedWeatherValues = new HashMap<>();
+            averagedWeatherValues.put(entry.getKey(),agregator.averageToSnapshot(new WeatherSnapshot()));
         }
     }
-
+    //класс, представляющий собой WeatherSnapshot, только в качестве полей - arrayList со значениями Полей других WeatherSnapshot
     private class WeatherSnapshotAgregator {
         ArrayList<Integer> temperature;
         ArrayList<Integer> windSpeed;
         ArrayList<String> windDirection;
         ArrayList<Integer> humidity;
         ArrayList<Integer> pressure;
-        ArrayList<Integer> cloudCover;
+        ArrayList<String> cloudCover;
         ArrayList<Boolean> isRaining;
         ArrayList<Boolean> isSnowing;
-        WeatherSnapshot averageToSnapshot(WeatherSnapshot snapshot){
+
+        public WeatherSnapshotAgregator() {
+            this.temperature = new ArrayList<>();
+            this.windSpeed = new ArrayList<>();
+            this.windDirection = new ArrayList<>();
+            this.humidity = new ArrayList<>();
+            this.pressure = new ArrayList<>();
+            this.cloudCover = new ArrayList<>();
+            this.isRaining = new ArrayList<>();
+            this.isSnowing = new ArrayList<>();
+        }
+
+        private WeatherSnapshot averageToSnapshot(WeatherSnapshot snapshot){
             snapshot.setTemperature(getIntegerAveragedValue(this.temperature));
             snapshot.setWindSpeed(getIntegerAveragedValue(this.windSpeed));
             //todo ЗАПЛАТКА.усреднить направление ветра
@@ -109,7 +150,8 @@ public class MainActivityPresenter {
             snapshot.setSnowing(false);
             snapshot.setHumidity(getIntegerAveragedValue(this.humidity));
             snapshot.setPressure(getIntegerAveragedValue(this.pressure));
-            snapshot.setCloudCover(getIntegerAveragedValue(this.cloudCover));
+            //todo ЗАПЛАТКА. усреднить облачность.
+            snapshot.setCloudCover("облачно");
         return snapshot;
         }
         //Todo ПРОВЕРИТЬ. Будет ли так работать Jenerick.
