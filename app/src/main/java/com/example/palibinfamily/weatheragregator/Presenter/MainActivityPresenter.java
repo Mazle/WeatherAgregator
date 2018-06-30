@@ -101,15 +101,16 @@ public class MainActivityPresenter {
         WeatherSnapshot averageToSnapshot(WeatherSnapshot snapshot){
             snapshot.setTemperature(getIntegerAveragedValue(this.temperature));
             snapshot.setWindSpeed(getIntegerAveragedValue(this.windSpeed));
-            //todo усреднить направление ветра
-            snapshot.setWindDirection();
-            //todo Усреднить дождь.
-            snapshot.setRaining();
-            //todo усреднить снег
-            snapshot.setSnowing();
+            //todo ЗАПЛАТКА.усреднить направление ветра
+            snapshot.setWindDirection("North");
+            //todo ЗАПЛАТКА.Усреднить дождь.
+            snapshot.setRaining(true);
+            //todo ЗАПЛАТКА.усреднить снег
+            snapshot.setSnowing(false);
             snapshot.setHumidity(getIntegerAveragedValue(this.humidity));
             snapshot.setPressure(getIntegerAveragedValue(this.pressure));
             snapshot.setCloudCover(getIntegerAveragedValue(this.cloudCover));
+        return snapshot;
         }
         //Todo ПРОВЕРИТЬ. Будет ли так работать Jenerick.
         private Integer getIntegerAveragedValue(ArrayList<Integer> list) {
