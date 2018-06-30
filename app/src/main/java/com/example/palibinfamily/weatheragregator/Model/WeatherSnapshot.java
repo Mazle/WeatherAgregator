@@ -1,6 +1,11 @@
 package com.example.palibinfamily.weatheragregator.Model;
 
+import android.content.Context;
+
+import com.example.palibinfamily.weatheragregator.R;
+
 import java.time.LocalDate;
+import java.util.GregorianCalendar;
 
 /**
  * Данный объект содержит в себе информацию о погоде, собранную с сайта.
@@ -9,25 +14,43 @@ import java.time.LocalDate;
  */
 
 public class WeatherSnapshot {
-    //todo РЕАЛИЗОВАТЬ. Определить в виде каккого типа переменной передавать дату и внести в класс данную переменную.
-    private String weatherSource; // с какакого сайта
-    private double temperature;
-    private double windSpeed;
-    private String windDirection;
-    private int humidity;
-    private int pressure;
-    private int cloudCover;
-    private LocalDate date;
+    //todo РЕАЛИЗОВАТЬ. Определить в виде каком виде передавать в презентер дату, облачность
+    protected String weatherSource; // с какакого сайта
+    protected int temperature;
+    protected int windSpeed;
+    protected String windDirection;
+    protected int humidity;
+    protected int pressure;
+    protected int cloudCover;
+    protected GregorianCalendar date;
+    protected boolean isRaining;
+    protected boolean isSnowing;
+
+    public boolean isRaining() {
+        return isRaining;
+    }
+
+    public void setRaining(boolean raining) {
+        isRaining = raining;
+    }
+
+    public boolean isSnowing() {
+        return isSnowing;
+    }
+
+    public void setSnowing(boolean snowing) {
+        isSnowing = snowing;
+    }
 
     public void setWeatherSource(String weatherSource) {
         this.weatherSource = weatherSource;
     }
 
-    public void setTemperature(double temperature) {
+    public void setTemperature(int temperature) {
         this.temperature = temperature;
     }
 
-    public void setWindSpeed(double windSpeed) {
+    public void setWindSpeed(int windSpeed) {
         this.windSpeed = windSpeed;
     }
 
@@ -47,7 +70,58 @@ public class WeatherSnapshot {
         this.cloudCover = cloudCover;
     }
 
-    public void setDate(LocalDate date) {
+    public void setDate(GregorianCalendar date) {
         this.date = date;
+    }
+
+    public String getWeatherSource() {
+        return weatherSource;
+    }
+
+    public int getTemperature() {
+        return temperature;
+    }
+
+    public int getWindSpeed() {
+        return windSpeed;
+    }
+
+    public String getWindDirection() {
+        return windDirection;
+    }
+
+    public int getHumidity() {
+        return humidity;
+    }
+
+    public int getPressure() {
+        return pressure;
+    }
+
+    public int getCloudCover() {
+        return cloudCover;
+    }
+
+    public GregorianCalendar getDate() {
+        return date;
+    }
+    public enum WindDirections {
+            N {
+               String getStringId(Context context) {
+                   return context.getResources().getString(R.string.w);
+                }
+            },
+            W {
+            },
+            E {},
+            S {},
+            NW {},
+            NE {},
+            SW {},
+            SE {}
+
+    }
+    public enum Cloudness {
+        CLEAR, CLOUDY, NO_SUN
     }
 }
