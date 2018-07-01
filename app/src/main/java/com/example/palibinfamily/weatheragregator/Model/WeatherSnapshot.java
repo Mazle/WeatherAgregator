@@ -4,7 +4,9 @@ import android.content.Context;
 
 import com.example.palibinfamily.weatheragregator.R;
 
+import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.GregorianCalendar;
 
 /**
@@ -13,7 +15,7 @@ import java.util.GregorianCalendar;
  *
  */
 
-public class WeatherSnapshot {
+public class WeatherSnapshot implements Serializable{
     //todo РЕАЛИЗОВАТЬ. Определить в виде каком виде передавать в презентер дату, облачность
     protected String weatherSource; // с какакого сайта
     protected int temperature;
@@ -22,7 +24,7 @@ public class WeatherSnapshot {
     protected int humidity;
     protected int pressure;
     protected String cloudCover;
-    protected GregorianCalendar date;
+    protected Date date;
     protected boolean isRaining;
     protected boolean isSnowing;
 
@@ -70,7 +72,7 @@ public class WeatherSnapshot {
         this.cloudCover = cloudCover;
     }
 
-    public void setDate(GregorianCalendar date) {
+    public void setDate(Date date) {
         this.date = date;
     }
 
@@ -102,7 +104,7 @@ public class WeatherSnapshot {
         return cloudCover;
     }
 
-    public GregorianCalendar getDate() {
+    public Date getDate() {
         return date;
     }
     public enum WindDirections {
