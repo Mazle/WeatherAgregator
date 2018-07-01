@@ -103,7 +103,8 @@ public class MainActivityPresenter {
     private void getAverageValuesFromAllSnapshotsByDates(HashMap<String,ArrayList<WeatherSnapshot>> map) {
         for (Map.Entry<String,ArrayList<WeatherSnapshot>> entry: map.entrySet()) {
             WeatherSnapshotAgregator agregator = new WeatherSnapshotAgregator();
-                for (WeatherSnapshot snapshot: entry.getValue()) {
+            WeatherSnapshot snapshotForAveraging = new WeatherSnapshot();
+            for (WeatherSnapshot snapshot: entry.getValue()) {
                     agregator.temperature.add(snapshot.getTemperature());
                     agregator.windSpeed.add(snapshot.getWindSpeed());
                     agregator.windDirection.add(snapshot.getWindDirection());
@@ -112,8 +113,9 @@ public class MainActivityPresenter {
                     agregator.cloudCover.add(snapshot.getCloudCover());
                     agregator.isRaining.add(snapshot.isRaining());
                     agregator.isSnowing.add(snapshot.isSnowing());
+                    snapshotForAveraging.setDate(snapshot.getDate());
                 }
-                if (averagedWeatherValues == null) averagedWeatherValues = new HashMap<>();
+            if (averagedWeatherValues == null) averagedWeatherValues = new HashMap<>();
             averagedWeatherValues.put(entry.getKey(),agregator.averageToSnapshot(new WeatherSnapshot()));
         }
     }
@@ -127,6 +129,7 @@ public class MainActivityPresenter {
         ArrayList<String> cloudCover;
         ArrayList<Boolean> isRaining;
         ArrayList<Boolean> isSnowing;
+        GregorianCalendar date;
 
         public WeatherSnapshotAgregator() {
             this.temperature = new ArrayList<>();

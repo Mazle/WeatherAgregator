@@ -2,6 +2,7 @@ package com.example.palibinfamily.weatheragregator.Model.DAO.ParserDAO;
 
 import com.example.palibinfamily.weatheragregator.Model.DAO.DAOFactory;
 import com.example.palibinfamily.weatheragregator.Model.DAO.WeatherGetter;
+import com.example.palibinfamily.weatheragregator.TmpClassesForTesting.TESTHelper;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,6 +19,6 @@ public class ParserDAOFactory extends DAOFactory {
     @Override
     public ArrayList<String> getSiteTitles() {
         //todo: КОСТЯ. Напиши метод, который парсит твой конфиг и берет заголовки сайтов, доступных для парсинга погоды
-       return null;
+       return TESTHelper.getTestTitles();
     }
 }
