@@ -2,4 +2,20 @@
     <string name="app_name">WeatherAgregator</string>
     <string name="action_settings">Settings</string>
     <string name="w">Восточный</string>
+    <string name="settings">Настройки</string>
+    <string name="notification_frequency">Показывать уведомления:</string>
+    <string name="sites_header">Сайты:</string>
+    <string name="weather_properties_header">Настройка отображения информации:</string>
+    <string name="temperature">Температура</string>
+    <string name="pressure">Давление</string>
+    <string name="hummidity">Влажность</string>
+    <string name="wind_speed">Скорость ветра</string>
+    <string name="wind_direction">Направление ветра</string>
+    <string name="cloudness">Облачность</string>
+    <string name="precipitation">Осадки</string>
+    <string name="always">Всегда</string>
+    <string name="once_a_day">Раз в день</string>
+    <string name="once_a_hour">Каждый час</string>
+
+
 </resources>
