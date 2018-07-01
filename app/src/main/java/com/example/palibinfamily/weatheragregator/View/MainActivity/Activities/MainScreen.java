@@ -38,11 +38,12 @@ public class MainScreen extends Fragment {
      * @return A new instance of fragment MainScreen.
      */
     // TODO: Rename and change types and number of parameters
-    public static Fragment newInstance(int sectionNumber) {
+    public static Fragment newInstance(int sectionNumber,WeatherSnapshot snapshot) {
         Fragment fragment = new MainScreen();
         Bundle args = new Bundle();
         args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-        args.putSerializable("data", Dummies.generateTestData().get(sectionNumber-1));
+//        args.putSerializable("data", Dummies.generateTestData().get(sectionNumber-1));
+        args.putSerializable("data", snapshot);
         fragment.setArguments(args);
         return fragment;
     }

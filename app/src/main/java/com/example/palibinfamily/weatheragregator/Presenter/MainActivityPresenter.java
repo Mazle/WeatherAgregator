@@ -35,7 +35,7 @@ public class MainActivityPresenter {
     public MainActivityPresenter(AppCompatActivity view) {
         this.view = view;
         //todo добавить настройку количества дней обзора
-        downloadWeatherValues(7);
+        downloadWeatherValues(8);
     }
 
     public ArrayList<WeatherSnapshot> getWeatherValuesList() {

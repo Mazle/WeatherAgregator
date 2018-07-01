@@ -1,4 +1,4 @@
-package com.example.palibinfamily.weatheragregator.View;
+package com.example.palibinfamily.weatheragregator.View.MainActivity;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;

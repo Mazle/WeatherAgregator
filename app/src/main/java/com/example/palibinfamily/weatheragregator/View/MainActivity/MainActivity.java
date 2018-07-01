@@ -6,6 +6,7 @@ import android.content.ServiceConnection;
 import android.content.pm.ActivityInfo;
 import android.os.IBinder;
 
+import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
@@ -21,16 +22,23 @@ import android.view.View;
 
 //import com.example.palibinfamily.weatheragregator.R;
 
-import com.example.palibinfamily.weatheragregator.TmpClassesForTesting.Dummies;
+import com.example.palibinfamily.weatheragregator.Model.WeatherSnapshot;
+import com.example.palibinfamily.weatheragregator.Presenter.MainActivityPresenter;
+//import com.example.palibinfamily.weatheragregator.TmpClassesForTesting.Dummies;
 import com.example.palibinfamily.weatheragregator.View.MainActivity.Activities.CustomViews.DaysBar;
 import com.example.palibinfamily.weatheragregator.View.MainActivity.Activities.MainScreen;
 import com.example.palibinfamily.weatheragregator.R;
+import com.example.palibinfamily.weatheragregator.View.Settings.SettingsActivity;
+
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, ViewPager.OnPageChangeListener {
     boolean bound = false;
     ServiceConnection sConn;
     Intent intent;
     final String LOG_TAG = "MainActivity";
+    private MainActivityPresenter presenter;
+    private ArrayList<WeatherSnapshot> weatherList;
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -64,10 +72,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mViewPager.setAdapter(mSectionsPagerAdapter);
         mViewPager.addOnPageChangeListener(this);
 
-        DaysBar daysBar = findViewById(R.id.bottomDaysBar);
-        daysBar.setViewPager(mViewPager);
-        daysBar.setWeatherDtata(Dummies.generateTestData());
-
 //        mViewPager.setCurrentItem();
 //        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
 //        fab.setOnClickListener(new View.OnClickListener() {
@@ -91,6 +95,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 bound = false;
             }
         };
+
+        DaysBar daysBar = findViewById(R.id.bottomDaysBar);
+        daysBar.setViewPager(mViewPager);
+
+        presenter = new MainActivityPresenter(this);
+        weatherList = presenter.getWeatherValuesList();
+
+        daysBar.setWeatherDtata(weatherList);
     }
 
 
@@ -110,6 +122,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+//            return true;
+            Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
             return true;
         }
 
@@ -166,8 +182,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         public Fragment getItem(int position) {
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
+            WeatherSnapshot snapshot = null;
 
-            return MainScreen.newInstance(position + 1);
+            if (position + 1 <= weatherList.size()){
+                snapshot = weatherList.get(position);
+            }
+
+            return MainScreen.newInstance(position + 1,snapshot);
             //return PlaceholderFragment.newInstance(position + 1);
         }
 
