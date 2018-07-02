@@ -156,8 +156,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //    }
     @Override
     public void onClick(View view) {
-
+        Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
     }
+
     public void onClickBind(View v) {
         bindService(intent, sConn, BIND_AUTO_CREATE);
     }

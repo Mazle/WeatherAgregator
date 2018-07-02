@@ -8,9 +8,15 @@ import com.example.palibinfamily.weatheragregator.Model.DAO.ParserDAO.Parsers.Co
 import com.example.palibinfamily.weatheragregator.Model.DAO.ParserDAO.Parsers.FullWeatherParserConfig;
 import com.example.palibinfamily.weatheragregator.Model.DAO.ParserDAO.Parsers.WeatherParser;
 import com.example.palibinfamily.weatheragregator.Model.DAO.WeatherGetter;
+import com.example.palibinfamily.weatheragregator.Model.LocationProvider.Locator;
 import com.example.palibinfamily.weatheragregator.Model.WeatherSnapshot;
 import com.example.palibinfamily.weatheragregator.TmpClassesForTesting.TestWeatherSnapshot;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
+
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -32,8 +38,32 @@ public class ParserHandler implements WeatherGetter {
         }
         @Override
         protected Void doInBackground(String... params) {
-            FullWeatherParserConfig fullConfig = ConfigHelpers.getConfigGismeteo();
-            WeatherParser parser = new WeatherParser(fullConfig);
+            String location = "Россия, Ульяновск";
+            //Locator locator = new Locator();
+            //location = locator.getCityName();
+            WeatherParser parser = new WeatherParser();
+            parser.getUrl("https://2ip.ru/");
+            location = (parser.execXpathToString("html>body>div>div:eq(1)>div:eq(4)>div:eq(1)>div>table>tbody>tr:eq(3)>td"));
+
+            Log.d(TAG, "doInBackground: location" + location);
+            //TODO: вот это вот куда - нибудь вынести
+
+            Document doc = null;
+            try {
+                doc = Jsoup.parse(new URL("https://www.gismeteo.ru/search/"+location+"/"), 15000);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            Elements el2 = doc.select("html>body>section>div>div>section>div>div>div:eq(0)>a:eq(0)");
+//            System.out.println(el2.attr("href"));
+            String href = el2.attr("href");
+//            System.out.println(fullHref);
+            Log.d(TAG, "doInBackground: href" + href);
+            ///////////////////////////////////////////
+
+            FullWeatherParserConfig fullConfig = ConfigHelpers.getConfigGismeteo(href);
+            parser = new WeatherParser(fullConfig);
             WeatherSnapshot tmp = parser.getWeather();
             tmp.setDate(new Date());
             Log.d(TAG, "doInBackground: " + tmp.getTemperature() + " - temperature");

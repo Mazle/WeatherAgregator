@@ -58,11 +58,13 @@ tools:context=".View.MainActivity.MainActivity">
 
         <TextView
             android:id="@+id/textView2"
-            android:textSize="20sp"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="10"
-            android:text="TextView" />
+            android:onClick="onClick"
+            android:text="@string/mainScreenSettings"
+            android:textColor="@color/colorPrimary"
+            android:textSize="20sp" />
     </LinearLayout>
 
 <com.example.palibinfamily.weatheragregator.View.MainActivity.Activities.CustomViews.DaysBar

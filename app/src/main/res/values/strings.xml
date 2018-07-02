@@ -26,4 +26,5 @@
     <string name="getWindSpeedEnd"> м/с</string>
     <string name="getWindDirection">Направление ветра: </string>
     <string name="getWindDirectionEnd"> </string>
+    <string name="mainScreenSettings">Настройки</string>
 </resources>

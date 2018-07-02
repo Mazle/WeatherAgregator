@@ -11,13 +11,18 @@ public class ConfigHelpers {
         return new FullWeatherParserConfig(parameters);
     }
 
-    public static FullWeatherParserConfig getConfigGismeteo(){
+    public static FullWeatherParserConfig getConfigGismeteo(String url){
         LinkedHashMap<String, WeatherParserConfig> parameters = new LinkedHashMap<>();
         int day = 0;
         WeatherParserConfig config = new WeatherParserConfig();
 
         config = new WeatherParserConfig();
-        config.setUrl("https://www.gismeteo.ru/weather-moscow-4368/10-days/");
+        if (url == null){
+            config.setUrl("https://www.gismeteo.ru/weather-moscow-4368/10-days/");
+        } else {
+            config.setUrl("https://www.gismeteo.ru" + url + "10-days/");
+        }
+        config.setUrl("https://www.gismeteo.ru" + url + "10-days/");
         config.setXpath("html>body>section>div>div>div>div>div:eq(1)>div:eq(4)>div>div:eq(1)>div>div:eq(1)>div>div>div>div:eq(" + day + ")");
         parameters.put("temperature",config);
 
