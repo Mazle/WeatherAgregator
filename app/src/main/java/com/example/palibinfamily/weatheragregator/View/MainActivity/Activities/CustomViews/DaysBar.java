@@ -133,14 +133,17 @@ public class DaysBar extends View {
 
                 dr.setBounds((width / 7) * (i), 0, (width / 7) * (i + 1), 100);
                 dr.draw(canvas);
-                int dayOfWeek = 0;
+                int dayOfWeek = 7;
                 int date = -1;
                 if (snap.getDate() != null) {
+                    Log.d(TAG, "onDraw: "+ snap.getDate().toLocaleString());
                     Calendar calendar = Calendar.getInstance();
                     calendar.setTime(snap.getDate());
                     calendar.setFirstDayOfWeek(Calendar.MONDAY);
                     dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK) - 1;
                     date = calendar.getTime().getDate();
+                }else{
+                    Log.d(TAG, "onDraw: snap.getDate() == null ????????????????");
                 }
                 paint.setColor(0xFFFFFFFF);
                 paintSmallBlur.setColor(0xFF000000);

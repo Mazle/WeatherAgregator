@@ -16,6 +16,6 @@
     <string name="always">Всегда</string>
     <string name="once_a_day">Раз в день</string>
     <string name="once_a_hour">Каждый час</string>
-
+    <string name="never">Никогда</string>
 
 </resources>

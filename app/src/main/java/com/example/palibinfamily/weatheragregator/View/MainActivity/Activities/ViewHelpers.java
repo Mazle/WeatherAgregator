@@ -7,5 +7,5 @@ public class ViewHelpers {
         storm,
         snow
     }
-    public static String[] days = {"ВС", "ПН","ВТ","СР","ЧТ","ПТ","СБ"};
+    public static String[] days = {"ВС", "ПН","ВТ","СР","ЧТ","ПТ","СБ","--"};
 }

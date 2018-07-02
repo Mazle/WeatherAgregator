@@ -13,6 +13,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -114,6 +115,9 @@ public class MainActivityPresenter {
                     agregator.isRaining.add(snapshot.isRaining());
                     agregator.isSnowing.add(snapshot.isSnowing());
                     snapshotForAveraging.setDate(snapshot.getDate());
+
+                    //TODO: дата дата
+                    agregator.date = snapshot.getDate();
                 }
             if (averagedWeatherValues == null) averagedWeatherValues = new HashMap<>();
             averagedWeatherValues.put(entry.getKey(),agregator.averageToSnapshot(new WeatherSnapshot()));
@@ -129,7 +133,7 @@ public class MainActivityPresenter {
         ArrayList<String> cloudCover;
         ArrayList<Boolean> isRaining;
         ArrayList<Boolean> isSnowing;
-        GregorianCalendar date;
+        Date date;
 
         public WeatherSnapshotAgregator() {
             this.temperature = new ArrayList<>();
@@ -155,6 +159,8 @@ public class MainActivityPresenter {
             snapshot.setPressure(getIntegerAveragedValue(this.pressure));
             //todo ЗАПЛАТКА. усреднить облачность.
             snapshot.setCloudCover("облачно");
+            //TODO: ЗАТЫЧКА на дату.
+            snapshot.setDate(this.date);
         return snapshot;
         }
         //Todo ПРОВЕРИТЬ. Будет ли так работать Jenerick.

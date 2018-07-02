@@ -1,7 +1,10 @@
 package com.example.palibinfamily.weatheragregator.Model.DAO.ParserDAO.Parsers;
 
-import bean.Weather;
-import bean.WeatherSnapshot;
+import android.util.Log;
+
+import com.example.palibinfamily.weatheragregator.Model.WeatherSnapshot;
+
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -14,6 +17,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class WeatherParser {
+    private final String TAG = "WeatherParser";
     private FullWeatherParserConfig config;
     private Document doc = null;
     public WeatherParser(FullWeatherParserConfig config) {
@@ -24,7 +28,7 @@ public class WeatherParser {
         Integer result = null;
         if (configElement.getUrl() != null) {
             try {
-                doc = Jsoup.parse(new URL(configElement.getUrl()), 5000);
+                doc = Jsoup.parse(new URL(configElement.getUrl()), 15000);
             } catch (Exception e) {
                 e.printStackTrace();
                 return null;
@@ -64,7 +68,8 @@ public class WeatherParser {
                 counterNum++;
             }
             if (!found){
-                System.out.println("[ERROR]" + item.getName() + " not found");
+//                System.out.println("[ERROR]" + item.getName() + " not found");
+                Log.d(TAG,item.getName() + " not found");
             }
         }
         int i = 0;
@@ -93,6 +98,7 @@ public class WeatherParser {
 
         for (Map.Entry<String , WeatherParserConfig> configElement : config.getParameters().entrySet()){
 //            System.out.println(configElement.getKey() + ":" + configElement.getValue().getUrl());
+            Log.d(TAG,configElement.getKey() + ":" + configElement.getValue().getUrl());
             Integer execResult;
             switch (configElement.getKey()){
                 case "temperature":{
