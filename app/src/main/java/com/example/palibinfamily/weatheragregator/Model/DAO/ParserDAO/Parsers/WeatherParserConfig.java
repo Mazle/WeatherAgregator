@@ -53,6 +53,15 @@ public class WeatherParserConfig {
     private String url;
 
     private List<WPCitem> pathItems;
+    private String xpath;
+
+    public String getXpath() {
+        return xpath;
+    }
+
+    public void setXpath(String xpath) {
+        this.xpath = xpath;
+    }
 
     public WeatherParserConfig() {
     }

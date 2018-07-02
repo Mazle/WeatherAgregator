@@ -45,16 +45,16 @@ public class MainView extends View {
     public void setSnapShot(WeatherSnapshot snapShot) {
         this.snapShot = snapShot;
         if (snapShot.getHumidity() > Integer.MIN_VALUE) {
-            extendedInfo.add("getHumidity: " + snapShot.getHumidity());
+            extendedInfo.add(getResources().getString(R.string.getHumidity) + snapShot.getHumidity() + getResources().getString(R.string.getHumidityEnd));
         }
         if (snapShot.getPressure() > Integer.MIN_VALUE) {
-            extendedInfo.add("getPressure: " + snapShot.getPressure());
+            extendedInfo.add(getResources().getString(R.string.getPressure) + snapShot.getPressure() + getResources().getString(R.string.getPressureEnd));
         }
         if (snapShot.getWindSpeed() > Integer.MIN_VALUE) {
-            extendedInfo.add("getWindSpeed: " + snapShot.getWindSpeed());
+            extendedInfo.add(getResources().getString(R.string.getWindSpeed) + snapShot.getWindSpeed() + getResources().getString(R.string.getWindSpeedEnd) );
         }
         if (snapShot.getWindDirection() != null) {
-            extendedInfo.add("getWindDirection: " + snapShot.getWindDirection());
+            extendedInfo.add(getResources().getString(R.string.getWindDirection) + snapShot.getWindDirection());
         }
 
         Random random = new Random();

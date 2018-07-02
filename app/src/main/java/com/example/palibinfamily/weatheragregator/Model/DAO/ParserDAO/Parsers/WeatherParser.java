@@ -1,9 +1,7 @@
 package com.example.palibinfamily.weatheragregator.Model.DAO.ParserDAO.Parsers;
 
-import android.util.Log;
 
 import com.example.palibinfamily.weatheragregator.Model.WeatherSnapshot;
-
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -11,7 +9,6 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.net.URL;
-import java.util.Date;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -35,6 +32,26 @@ public class WeatherParser {
 
     public void setConfig(FullWeatherParserConfig config) {
         this.config = config;
+    }
+
+    public void getUrl(String url){
+        if (url != null){
+            try {
+                doc = Jsoup.parse(new URL(url), 15000);
+            } catch (Exception e) {
+//                e.printStackTrace();
+            }
+        }
+    }
+
+    public String execXpathToString(String xpath){
+        String result = null;
+        if (xpath != null){
+            Elements elements = doc.select(xpath);
+            //System.out.println(el2.text());
+            result = elements.text();
+        }
+        return result;
     }
 
     public String execConfigElementString(WeatherParserConfig configElement){
@@ -82,6 +99,7 @@ public class WeatherParser {
                     case id:{
                         if (el.id().equals(item.getName())) {
                             counterId++;
+                            System.out.println("" + counterId + ":" + el.text() + "|" + el.toString());
                             if ((item.getNum() < 0)||(counterId == item.getNum())) {
                                 els = el.getAllElements();
                                 found = true;
@@ -93,7 +111,7 @@ public class WeatherParser {
             }
             if (!found){
 //                System.out.println("[ERROR]" + item.getName() + " not found");
-                Log.d(TAG,item.getName() + " not found");
+//                Log.d(TAG,item.getName() + " not found");
             }
         }
 //        int i = 0;
@@ -159,7 +177,7 @@ public class WeatherParser {
             }
             if (!found){
 //                System.out.println("[ERROR]" + item.getName() + " not found");
-                Log.d(TAG,item.getName() + " not found");
+//                Log.d(TAG,item.getName() + " not found");
             }
         }
         int i = 0;
@@ -188,52 +206,71 @@ public class WeatherParser {
 
         for (Map.Entry<String , WeatherParserConfig> configElement : config.getParameters().entrySet()){
 //            System.out.println(configElement.getKey() + ":" + configElement.getValue().getUrl());
-            Log.d(TAG,configElement.getKey() + ":" + configElement.getValue().getUrl());
-            Integer execResult;
+//            Log.d(TAG,configElement.getKey() + ":" + configElement.getValue().getUrl());
+            if (configElement.getValue().getUrl() != null){
+                getUrl(configElement.getValue().getUrl());
+            }
+            String execResult;
             switch (configElement.getKey()){
                 case "temperature":{
-                    execResult = execConfigElement(configElement.getValue());
+                    execResult = execXpathToString(configElement.getValue().getXpath());
                     if (execResult != null) {
-                        result.setTemperature(execResult);
+                        try {
+                            result.setTemperature(Integer.parseInt(execResult));
+                        }catch (Exception e){
+
+                        }
                     }
                     break;}
                 case "humidity":{
-                    execResult = execConfigElement(configElement.getValue());
+                    execResult = execXpathToString(configElement.getValue().getXpath());
                     if (execResult != null) {
-                        result.setHumidity(execResult);
+                        try {
+                            result.setHumidity(Integer.parseInt(execResult));
+                        }catch (Exception e){
+
+                        }
                     }
                     break;}
                 case "windStrength":{
-                    execResult = execConfigElement(configElement.getValue());
+                    execResult = execXpathToString(configElement.getValue().getXpath());
                     if (execResult != null) {
-                        result.setWindSpeed(execResult);
+                        try {
+                            result.setWindSpeed(Integer.parseInt(execResult));
+                        }catch (Exception e){
+
+                        }
                     }
                     break;}
                 case "windDirection":{
-                    text = execConfigElementString(configElement.getValue());
-                    if (text != null) {
-                        result.setWindDirection(text);
-                        Log.d(TAG, "getWeather windDirection: " + text);
+                    execResult = execXpathToString(configElement.getValue().getXpath());
+                    if (execResult != null) {
+                        result.setWindDirection(execResult);
+//                        Log.d(TAG, "getWeather windDirection: " + text);
                     }
                     break;}
                 case "weatherType":{
-                    text = execConfigElementString(configElement.getValue());
-                    if (text != null) {
+                    execResult = execXpathToString(configElement.getValue().getXpath());
+                    if (execResult != null) {
                         result.setRaining(false);
                         result.setSnowing(false);
 
-                        if (text.contains("дождь")){
+                        if (execResult.contains("дождь")){
                             result.setRaining(true);
                         }
 
 //                        result.setWindDirection(text);
-                        Log.d(TAG, "getWeather weatherType: " + text);
+//                        Log.d(TAG, "getWeather weatherType: " + text);
                     }
                     break;}
                 case "pressure":{
-                    execResult = execConfigElement(configElement.getValue());
+                    execResult = execXpathToString(configElement.getValue().getXpath());
                     if (execResult != null) {
-                        result.setPressure(execResult);
+                        try {
+                            result.setPressure(Integer.parseInt(execResult));
+                        }catch (Exception e){
+
+                        }
                     }
                     break;}
                 default:{

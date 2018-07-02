@@ -13,282 +13,68 @@ public class ConfigHelpers {
 
     public static FullWeatherParserConfig getConfigGismeteo(){
         LinkedHashMap<String, WeatherParserConfig> parameters = new LinkedHashMap<>();
-        ArrayList<WeatherParserConfig.WPCitem> classList = new ArrayList<>();
-
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"content"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"wrap"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"flexbox clearfix"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"main"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"column-wrap"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"__frame_sm"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"__frame",2));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"widget js_widget"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"widget__body"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"widget__container"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"widget__row",2));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"widget__chart w_temperature-avg"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"chart chart__temperature"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"values"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.num,1)); // номер дня
-
+        int day = 0;
         WeatherParserConfig config = new WeatherParserConfig();
+
+        config = new WeatherParserConfig();
         config.setUrl("https://www.gismeteo.ru/weather-moscow-4368/10-days/");
-        config.setPathItems(classList);
+        config.setXpath("html>body>section>div>div>div>div>div:eq(1)>div:eq(4)>div>div:eq(1)>div>div:eq(1)>div>div>div>div:eq(" + day + ")");
         parameters.put("temperature",config);
 
-        classList = new ArrayList<>();
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"content"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"wrap"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"flexbox clearfix"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"main"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"column-wrap"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"__frame_sm"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"__frame",6));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"widget js_widget"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"widget__body"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"widget__container"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"widget__row widget__row_table"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"widget__item",1)); // номер дня
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.num,1));
-
         config = new WeatherParserConfig();
-        config.setPathItems(classList);
+        config.setXpath("html>body>section>div>div>div>div>div:eq(1)>div:eq(9)>div>div:eq(1)>div>div:eq(1)>div:eq(" + day + ")>div");
         parameters.put("humidity",config);
 
-        classList = new ArrayList<>();
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"content"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"wrap"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"flexbox clearfix"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"main"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"column-wrap"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"__frame_sm"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"__frame",3));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"widget js_widget"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"widget__body"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"widget__container"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"widget__row widget__row_table",1));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"widget__item",1)); // номер дня
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"w_wind"));
-
-
         config = new WeatherParserConfig();
-        config.setPathItems(classList);
+        config.setXpath("html>body>section>div>div>div>div>div:eq(1)>div:eq(5)>div>div:eq(1)>div>div:eq(1)>div:eq(" + day + ")>div>div:eq(0)");
         parameters.put("windStrength",config);
 
-        classList = new ArrayList<>();
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"content"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"wrap"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"flexbox clearfix"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"main"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"column-wrap"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"__frame_sm"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"__frame",3));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"widget js_widget"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"widget__body"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"widget__container"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"widget__row widget__row_table",1));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"widget__item",1)); // номер дня
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.num,7));
-//        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"w_wind"));
-
-
         config = new WeatherParserConfig();
-        config.setPathItems(classList);
+        config.setXpath("html>body>section>div>div>div>div>div:eq(1)>div:eq(5)>div>div:eq(1)>div>div:eq(1)>div:eq(" + day + ")>div>div:eq(2)");
         parameters.put("windDirection",config);
 
-
-        classList = new ArrayList<>();
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"content"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"wrap"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"flexbox clearfix"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"main"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"column-wrap"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"__frame_sm"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"__frame",5));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"widget js_widget"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"widget__body"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"widget__container"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"widget__row",2));
-
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"js_pressure pressureline w_pressure"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"chart chart__pressure"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"values"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"value",1));// номер дня
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"maxt"));
-
-
         config = new WeatherParserConfig();
-        config.setPathItems(classList);
+        config.setXpath("html>body>section>div>div>div>div>div:eq(1)>div:eq(8)>div>div:eq(1)>div>div:eq(1)>div>div>div>div:eq(" + day + ")>div:eq(0)");
         parameters.put("pressure",config);
 
-        classList = new ArrayList<>();
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"content"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"wrap"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"flexbox clearfix"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"main"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"column-wrap"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"__frame_sm"));
-
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"forecast_frame"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"widget__wrap"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"widget js_widget"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"widget__body"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"widget__container"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"widget__row widget__row_table",1));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"widget__item",1));// номер дня
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"widget__value w_icon"));
-//        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"tooltip"));
-
         config = new WeatherParserConfig();
-//        config.setUrl("https://www.gismeteo.ru/weather-moscow-4368/10-days/");
-        config.setPathItems(classList);
+        config.setXpath("html>body>section>div>div>div>div>div:eq(1)>div:eq(0)>div>div>div:eq(0)>div>div:eq(1)>div:eq(" + day + ")>div>span");
         parameters.put("weatherType",config);
 
-        FullWeatherParserConfig result = new FullWeatherParserConfig(parameters);
-//        result.getWindDirectionMap().put("С",0);
-//        result.getWindDirectionMap().put("СВ",1);
-//        result.getWindDirectionMap().put("В",2);
-//        result.getWindDirectionMap().put("ЮВ",3);
-//        result.getWindDirectionMap().put("Ю",4);
-//        result.getWindDirectionMap().put("ЮЗ",5);
-//        result.getWindDirectionMap().put("З",6);
-//        result.getWindDirectionMap().put("СЗ",7);
-        return result;
+        return new FullWeatherParserConfig(parameters);
     }
 
     public static FullWeatherParserConfig getConfigGismeteoForDayNum(int day){
         int dayNum = day + 1;
         LinkedHashMap<String, WeatherParserConfig> parameters = new LinkedHashMap<>();
-        ArrayList<WeatherParserConfig.WPCitem> classList = new ArrayList<>();
 
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"content"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"wrap"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"flexbox clearfix"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"main"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"column-wrap"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"__frame_sm"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"__frame",2));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"widget js_widget"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"widget__body"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"widget__container"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"widget__row",2));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"widget__chart w_temperature-avg"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"chart chart__temperature"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"values"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.num,dayNum)); // номер дня
 
         WeatherParserConfig config = new WeatherParserConfig();
 //        config.setUrl("https://www.gismeteo.ru/weather-moscow-4368/10-days/");
-        config.setPathItems(classList);
+
+        config = new WeatherParserConfig();
+        config.setXpath("html>body>section>div>div>div>div>div:eq(1)>div:eq(4)>div>div:eq(1)>div>div:eq(1)>div>div>div>div:eq(" + day + ")");
         parameters.put("temperature",config);
 
-        classList = new ArrayList<>();
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"content"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"wrap"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"flexbox clearfix"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"main"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"column-wrap"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"__frame_sm"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"__frame",6));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"widget js_widget"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"widget__body"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"widget__container"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"widget__row widget__row_table"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"widget__item",dayNum)); // номер дня
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.num,1));
-
         config = new WeatherParserConfig();
-        config.setPathItems(classList);
+        config.setXpath("html>body>section>div>div>div>div>div:eq(1)>div:eq(9)>div>div:eq(1)>div>div:eq(1)>div:eq(" + day + ")>div");
         parameters.put("humidity",config);
 
-        classList = new ArrayList<>();
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"content"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"wrap"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"flexbox clearfix"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"main"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"column-wrap"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"__frame_sm"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"__frame",3));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"widget js_widget"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"widget__body"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"widget__container"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"widget__row widget__row_table",1));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"widget__item",dayNum)); // номер дня
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"w_wind"));
-
-
         config = new WeatherParserConfig();
-        config.setPathItems(classList);
+        config.setXpath("html>body>section>div>div>div>div>div:eq(1)>div:eq(5)>div>div:eq(1)>div>div:eq(1)>div:eq(" + day + ")>div>div:eq(0)");
         parameters.put("windStrength",config);
 
-        classList = new ArrayList<>();
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"content"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"wrap"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"flexbox clearfix"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"main"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"column-wrap"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"__frame_sm"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"__frame",3));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"widget js_widget"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"widget__body"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"widget__container"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"widget__row widget__row_table",1));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"widget__item",dayNum)); // номер дня
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.num,7));
-//        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"w_wind"));
-
-
         config = new WeatherParserConfig();
-        config.setPathItems(classList);
+        config.setXpath("html>body>section>div>div>div>div>div:eq(1)>div:eq(5)>div>div:eq(1)>div>div:eq(1)>div:eq(" + day + ")>div>div:eq(2)");
         parameters.put("windDirection",config);
 
-        classList = new ArrayList<>();
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"content"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"wrap"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"flexbox clearfix"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"main"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"column-wrap"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"__frame_sm"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"__frame",5));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"widget js_widget"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"widget__body"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"widget__container"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"widget__row",2));
-
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"js_pressure pressureline w_pressure"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"chart chart__pressure"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"values"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"value",dayNum));// номер дня
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"maxt"));
-
-
         config = new WeatherParserConfig();
-        config.setPathItems(classList);
+        config.setXpath("html>body>section>div>div>div>div>div:eq(1)>div:eq(8)>div>div:eq(1)>div>div:eq(1)>div>div>div>div:eq(" + day + ")>div:eq(0)");
         parameters.put("pressure",config);
 
-        classList = new ArrayList<>();
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"content"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"wrap"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"flexbox clearfix"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"main"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"column-wrap"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"__frame_sm"));
-
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"forecast_frame"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"widget__wrap"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"widget js_widget"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"widget__body"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"widget__container"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"widget__row widget__row_table",1));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"widget__item",dayNum));// номер дня
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"widget__value w_icon"));
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"tooltip"));
-
         config = new WeatherParserConfig();
-//        config.setUrl("https://www.gismeteo.ru/weather-moscow-4368/10-days/");
-        config.setPathItems(classList);
+        config.setXpath("html>body>section>div>div>div>div>div:eq(1)>div:eq(0)>div>div>div:eq(0)>div>div:eq(1)>div:eq(" + day + ")>div>span");
         parameters.put("weatherType",config);
-
 
         return new FullWeatherParserConfig(parameters);
     }
@@ -302,6 +88,20 @@ public class ConfigHelpers {
 
         WeatherParserConfig config = new WeatherParserConfig();
         config.setUrl("https://2ip.ru/");
+        config.setPathItems(classList);
+
+        return config;
+    }
+
+    public static WeatherParserConfig getConfigip2location(){
+
+        ArrayList<WeatherParserConfig.WPCitem> classList = new ArrayList<>();
+
+        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.id,"cityName",4));
+
+
+        WeatherParserConfig config = new WeatherParserConfig();
+        config.setUrl("https://www.ip2location.com/");
         config.setPathItems(classList);
 
         return config;
