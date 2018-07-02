@@ -1,6 +1,7 @@
 package com.example.palibinfamily.weatheragregator.Presenter;
 
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 
 import com.example.palibinfamily.weatheragregator.Helpers.DateHelper;
@@ -15,28 +16,31 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /*
 * требуется передача активити в конструкторе презентера
 * в  презентере берется в расчет, что активити - наследник класса android.support.v7.app.AppCompatActivity;
 * ВОПРОС: как усреднять Направление ветра?
-* todo написать удаление старых дат из hashMap
+* todo написать удаление старых дат из LinkedHashMap
  */
 
 public class MainActivityPresenter {
+    private final String TAG = "MainActivityPresenter";
     // Ключ - дата, в формате DateHelper.formatDMY(date)
-    private HashMap<String,ArrayList<WeatherSnapshot>> contentMapFromSites;
-    private HashMap<String,WeatherSnapshot> averagedWeatherValues;
+    private LinkedHashMap<String,ArrayList<WeatherSnapshot>> contentMapFromSites;
+    private LinkedHashMap<String,WeatherSnapshot> averagedWeatherValues;
     //карта соответствия порядкового номера дня соответствующей дате
-    private HashMap<Integer,String> stringDatesInWeatherValues = new HashMap<>();
+    private LinkedHashMap<Integer,String> stringDatesInWeatherValues = new LinkedHashMap<>();
     private AppCompatActivity view;
 
     public MainActivityPresenter(AppCompatActivity view) {
         this.view = view;
         //todo добавить настройку количества дней обзора
-        downloadWeatherValues(8);
+        Log.d(TAG, "MainActivityPresenter: ");
+        downloadWeatherValues(7);
+
     }
 
     public ArrayList<WeatherSnapshot> getWeatherValuesList() {
@@ -58,8 +62,8 @@ public class MainActivityPresenter {
         //усредняем результаты
         getAverageValuesFromAllSnapshotsByDates(contentMapFromSites);
     }
-    private HashMap<String, ArrayList<WeatherSnapshot>> initContentList(int daysAmount) {
-        if (contentMapFromSites == null) contentMapFromSites = new HashMap<>();
+    private LinkedHashMap<String, ArrayList<WeatherSnapshot>> initContentList(int daysAmount) {
+        if (contentMapFromSites == null) contentMapFromSites = new LinkedHashMap<>();
         //cчитываем заголовки сайтов, отмеченные чекбоксом true в настройках
         ArrayList<String> siteTitles = getSiteTitlesFromPreferences();
         //Вызываем парсер, заполняющий weatherSnapshot для каждого дня из каждого источника, заносим в contentListFromSites
@@ -71,7 +75,7 @@ public class MainActivityPresenter {
         return siteTitles;
     }
     //Создает map по датам, заполняя значения list'ом из прогнозов по текущей дате из разных сайтов
-    private HashMap<String,ArrayList<WeatherSnapshot>> getСontentFromSites(ArrayList<String> sitesTitles, int dayAmount) {
+    private LinkedHashMap<String,ArrayList<WeatherSnapshot>> getСontentFromSites(ArrayList<String> sitesTitles, int dayAmount) {
         GregorianCalendar date = new GregorianCalendar();
         date = DateHelper.formatDMY(date);
         //todo BADPRACTICE.исправить через итераторы
@@ -84,7 +88,7 @@ public class MainActivityPresenter {
                 //Todo РЕАЛИЗОВАТЬ. определить удобный способ и воткнуть подтягиватель данных о времени
                 //Заполняем map пустыми list
                 String dateKey = DateHelper.stringDMYFormat(iteratorDate, ".");
-                // задаем соответствие между порядковыми номероми в листе и значениями ключей в hashMap
+                // задаем соответствие между порядковыми номероми в листе и значениями ключей в LinkedHashMap
                 //todo БАГФИКС.сделать так, чтобы данные не перезаписывались при каждой итерации
                 if (iterationNumber==0) {
                     stringDatesInWeatherValues.put(daysCount, dateKey);
@@ -95,13 +99,14 @@ public class MainActivityPresenter {
                 contentMapFromSites.get(dateKey).add(snapshot);
                 DateHelper.increaseDays(iteratorDate,1);
                 daysCount++;
+                Log.d(TAG, "getСontentFromSites: daysCount = " + daysCount);
             }
             iterationNumber++;
         }
         return contentMapFromSites;
     }
    //вычисляет среднее значение для всех Snapshots в map
-    private void getAverageValuesFromAllSnapshotsByDates(HashMap<String,ArrayList<WeatherSnapshot>> map) {
+    private void getAverageValuesFromAllSnapshotsByDates(LinkedHashMap<String,ArrayList<WeatherSnapshot>> map) {
         for (Map.Entry<String,ArrayList<WeatherSnapshot>> entry: map.entrySet()) {
             WeatherSnapshotAgregator agregator = new WeatherSnapshotAgregator();
             WeatherSnapshot snapshotForAveraging = new WeatherSnapshot();
@@ -119,7 +124,7 @@ public class MainActivityPresenter {
                     //TODO: дата дата
                     agregator.date = snapshot.getDate();
                 }
-            if (averagedWeatherValues == null) averagedWeatherValues = new HashMap<>();
+            if (averagedWeatherValues == null) averagedWeatherValues = new LinkedHashMap<>();
             averagedWeatherValues.put(entry.getKey(),agregator.averageToSnapshot(new WeatherSnapshot()));
         }
     }
@@ -152,15 +157,16 @@ public class MainActivityPresenter {
             //todo ЗАПЛАТКА.усреднить направление ветра
             snapshot.setWindDirection("North");
             //todo ЗАПЛАТКА.Усреднить дождь.
-            snapshot.setRaining(true);
+            snapshot.setRaining(this.isRaining.get(0));
             //todo ЗАПЛАТКА.усреднить снег
-            snapshot.setSnowing(false);
+            snapshot.setSnowing(this.isSnowing.get(0));
             snapshot.setHumidity(getIntegerAveragedValue(this.humidity));
             snapshot.setPressure(getIntegerAveragedValue(this.pressure));
             //todo ЗАПЛАТКА. усреднить облачность.
             snapshot.setCloudCover("облачно");
-            //TODO: ЗАТЫЧКА на дату.
+            //TODO: ЗАТЫЫЫЫЫЫЫЫЫЫЫЧКА на дату и ветер.
             snapshot.setDate(this.date);
+            snapshot.setWindDirection(this.windDirection.get(0));
         return snapshot;
         }
         //Todo ПРОВЕРИТЬ. Будет ли так работать Jenerick.

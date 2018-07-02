@@ -21,6 +21,11 @@ public class DAOFacade {
         WeatherSnapshot snap = null;
         while (snap == null){
             snap = weatherGetter.getWeatherFrom(SiteTitle, date);
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
         Log.d(TAG, "getWeatherFrom: " + snap.getDate().toLocaleString());
         return snap;

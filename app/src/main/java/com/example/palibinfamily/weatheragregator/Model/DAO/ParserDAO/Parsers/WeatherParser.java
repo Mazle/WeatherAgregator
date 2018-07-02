@@ -20,9 +20,88 @@ public class WeatherParser {
     private final String TAG = "WeatherParser";
     private FullWeatherParserConfig config;
     private Document doc = null;
+
+    public WeatherParser(){
+
+    }
+
     public WeatherParser(FullWeatherParserConfig config) {
         this.config = config;
     }
+
+    public FullWeatherParserConfig getConfig() {
+        return config;
+    }
+
+    public void setConfig(FullWeatherParserConfig config) {
+        this.config = config;
+    }
+
+    private String execConfigElementString(WeatherParserConfig configElement){
+        String result = null;
+        if (configElement.getUrl() != null) {
+            try {
+                doc = Jsoup.parse(new URL(configElement.getUrl()), 15000);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+
+        Elements els = doc.body().getAllElements();
+
+        for(WeatherParserConfig.WPCitem item:configElement.getPathItems()){
+            int counterClassName = 0;
+            int counterNum = 0;
+            boolean found = false;
+            for (Element el:els) {
+                switch (item.getParseType()){
+                    case className:{
+                        if (el.className().equals(item.getName())) {
+                            counterClassName++;
+//                            System.out.println("" + counterClassName + ":" + item.getNum() + "[" + el.className() +"]");
+                            if ((item.getNum() < 0)||(counterClassName == item.getNum())) {
+                                els = el.getAllElements();
+//                            System.out.println(el.className() + ":" + el.text() + "|" + el.toString());
+//                                System.out.println("" + counterClassName + ":" + item.getNum() + "[" + el.className() +"]");
+                                found = true;
+                            }
+                        }
+
+                        break;}
+                    case num:{
+                        if (counterNum == item.getNum()){
+                            els = el.getAllElements();
+//                            System.out.println("" + counter + ":" + el.text() + "|" + el.toString());
+//                            System.out.println("" + counterNum + ":" + item.getNum() + "[" + el.className() +"]");
+                            found = true;
+                        }
+                        break; }
+                }
+                counterNum++;
+            }
+            if (!found){
+//                System.out.println("[ERROR]" + item.getName() + " not found");
+                Log.d(TAG,item.getName() + " not found");
+            }
+        }
+        int i = 0;
+        for (Element el2:els){
+            try {
+//                System.out.println("!" + Integer.parseInt(el2.text().replaceAll("°","")));
+
+                Log.d(TAG, "execConfigElementString: el2.toString " + el2.toString());
+                Log.d(TAG, "execConfigElementString: el2.text " + el2.text());
+                Log.d(TAG, "execConfigElementString: el2.data" + el2.data());
+                result = el2.text();
+            }catch (Exception e){
+
+            }
+            i++;
+        }
+        return result;
+    }
+
 
     private Integer execConfigElement(WeatherParserConfig configElement){
         Integer result = null;
@@ -74,7 +153,6 @@ public class WeatherParser {
         }
         int i = 0;
         for (Element el2:els){
-//            System.out.println(">" + i + "  " + el2.className() + ":" + el2.text() + "|" + el2.toString());
             try {
 //                System.out.println("!" + Integer.parseInt(el2.text().replaceAll("°","")));
                 Pattern pat = Pattern.compile("[-]?[0-9]+(.[0-9]+)?");
@@ -82,6 +160,7 @@ public class WeatherParser {
                 if (matcher.find()) {
                     result = (int)(Float.parseFloat(matcher.group()));
                 };
+
             }catch (Exception e){
 
             }
@@ -117,6 +196,27 @@ public class WeatherParser {
                     execResult = execConfigElement(configElement.getValue());
                     if (execResult != null) {
                         result.setWindSpeed(execResult);
+                    }
+                    break;}
+                case "windDirection":{
+                    text = execConfigElementString(configElement.getValue());
+                    if (text != null) {
+                        result.setWindDirection(text);
+                        Log.d(TAG, "getWeather windDirection: " + text);
+                    }
+                    break;}
+                case "weatherType":{
+                    text = execConfigElementString(configElement.getValue());
+                    if (text != null) {
+                        result.setRaining(false);
+                        result.setSnowing(false);
+
+                        if (text.contains("дождь")){
+                            result.setRaining(true);
+                        }
+
+//                        result.setWindDirection(text);
+                        Log.d(TAG, "getWeather weatherType: " + text);
                     }
                     break;}
                 case "pressure":{

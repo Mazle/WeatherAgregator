@@ -8,6 +8,11 @@ public class WeatherParserConfig {
         className
     }
 
+    public enum ResultType{
+        number,
+        windDirection
+    }
+
     public static class WPCitem{
         private ParseType parseType;
         private String name;

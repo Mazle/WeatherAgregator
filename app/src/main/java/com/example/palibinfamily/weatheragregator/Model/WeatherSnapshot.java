@@ -20,7 +20,7 @@ public class WeatherSnapshot implements Serializable{
     protected String weatherSource; // с какакого сайта
     protected int temperature;
     protected int windSpeed;
-    protected String windDirection;
+    protected String windDirection = "null";
     protected int humidity;
     protected int pressure;
     protected String cloudCover;

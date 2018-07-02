@@ -5,6 +5,15 @@ import java.util.LinkedHashMap;
 
 public class FullWeatherParserConfig {
     private LinkedHashMap<String, WeatherParserConfig> parameters;
+    private HashMap<String,Integer> windDirectionMap = new HashMap<>();
+
+    public HashMap<String, Integer> getWindDirectionMap() {
+        return windDirectionMap;
+    }
+
+    public void setWindDirectionMap(HashMap<String, Integer> windDirectionMap) {
+        this.windDirectionMap = windDirectionMap;
+    }
 
     public FullWeatherParserConfig(LinkedHashMap<String, WeatherParserConfig> parameters) {
         this.parameters = parameters;

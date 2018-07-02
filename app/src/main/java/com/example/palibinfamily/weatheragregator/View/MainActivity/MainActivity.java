@@ -1,5 +1,6 @@
 package com.example.palibinfamily.weatheragregator.View.MainActivity;
 
+import android.annotation.SuppressLint;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
@@ -31,6 +32,8 @@ import com.example.palibinfamily.weatheragregator.R;
 import com.example.palibinfamily.weatheragregator.View.Settings.SettingsActivity;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, ViewPager.OnPageChangeListener {
     boolean bound = false;
@@ -55,6 +58,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      */
     private ViewPager mViewPager;
 
+    @SuppressLint("NewApi")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -101,6 +105,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         presenter = new MainActivityPresenter(this);
         weatherList = presenter.getWeatherValuesList();
+//        weatherList.sort(new Comparator<WeatherSnapshot>() {
+//            @Override
+//            public int compare(WeatherSnapshot o1, WeatherSnapshot o2) {
+//                return o1.getDate().compareTo(o2.getDate());
+//            }
+//        });
 
         daysBar.setWeatherDtata(weatherList);
     }
@@ -185,7 +195,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             WeatherSnapshot snapshot = null;
 
             if (position + 1 <= weatherList.size()){
-                snapshot = weatherList.get(position);
+//                snapshot = weatherList.get(position);
+                snapshot = presenter.getSnapshotFromDayNumber(position);
             }
 
             return MainScreen.newInstance(position + 1,snapshot);
