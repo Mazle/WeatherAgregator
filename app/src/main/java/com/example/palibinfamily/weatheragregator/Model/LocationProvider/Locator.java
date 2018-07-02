@@ -29,7 +29,8 @@ public class Locator {
         @Override
         protected Void doInBackground(String... params) {
             WeatherParser parser = new WeatherParser();
-            location = (parser.execConfigElementString(ConfigHelpers.getConfig2ip()));
+            parser.getUrl("https://2ip.ru/");
+            location = (parser.execXpathToString("html>body>div>div:eq(1)>div:eq(4)>div:eq(1)>div>table>tbody>tr:eq(3)>td"));
             return null;
             //params[0] - Ваша ссылка
             //Получение данных

@@ -81,15 +81,15 @@ public class ConfigHelpers {
 
     public static WeatherParserConfig getConfig2ip(){
 
-        ArrayList<WeatherParserConfig.WPCitem> classList = new ArrayList<>();
+//        ArrayList<WeatherParserConfig.WPCitem> classList = new ArrayList<>();
 
-        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"ip-info-entry__value",4));
+//        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"ip-info-entry__value",4));
 
 
         WeatherParserConfig config = new WeatherParserConfig();
         config.setUrl("https://2ip.ru/");
-        config.setPathItems(classList);
-
+//        config.setPathItems(classList);
+        config.setXpath("html>body>div>div:eq(1)>div:eq(4)>div:eq(1)>div>table>tbody>tr:eq(3)>td");
         return config;
     }
 
