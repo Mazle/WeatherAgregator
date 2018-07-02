@@ -37,7 +37,7 @@ public class WeatherParser {
         this.config = config;
     }
 
-    private String execConfigElementString(WeatherParserConfig configElement){
+    public String execConfigElementString(WeatherParserConfig configElement){
         String result = null;
         if (configElement.getUrl() != null) {
             try {
@@ -48,10 +48,12 @@ public class WeatherParser {
             }
         }
 
+        //TODO check null els & doc
         Elements els = doc.body().getAllElements();
 
         for(WeatherParserConfig.WPCitem item:configElement.getPathItems()){
             int counterClassName = 0;
+            int counterId = 0;
             int counterNum = 0;
             boolean found = false;
             for (Element el:els) {
@@ -77,6 +79,15 @@ public class WeatherParser {
                             found = true;
                         }
                         break; }
+                    case id:{
+                        if (el.id().equals(item.getName())) {
+                            counterId++;
+                            if ((item.getNum() < 0)||(counterId == item.getNum())) {
+                                els = el.getAllElements();
+                                found = true;
+                            }
+                        }
+                        break;}
                 }
                 counterNum++;
             }
@@ -85,19 +96,18 @@ public class WeatherParser {
                 Log.d(TAG,item.getName() + " not found");
             }
         }
-        int i = 0;
-        for (Element el2:els){
-            try {
+//        int i = 0;
+        Element el2 = els.first();
+        try {
 //                System.out.println("!" + Integer.parseInt(el2.text().replaceAll("°","")));
 
-                Log.d(TAG, "execConfigElementString: el2.toString " + el2.toString());
-                Log.d(TAG, "execConfigElementString: el2.text " + el2.text());
-                Log.d(TAG, "execConfigElementString: el2.data" + el2.data());
-                result = el2.text();
-            }catch (Exception e){
+//                Log.d(TAG, "execConfigElementString: el2.toString " + el2.toString());
+//                Log.d(TAG, "execConfigElementString: el2.text " + el2.text());
+//                System.out.println("execConfigElementString: el2.toString" + el2.toString());
+//                System.out.println("execConfigElementString: el2.text" + el2.text());
+            result = el2.text();
+        }catch (Exception e){
 
-            }
-            i++;
         }
         return result;
     }
@@ -114,6 +124,7 @@ public class WeatherParser {
             }
         }
 
+        //TODO check null els & doc
         Elements els = doc.body().getAllElements();
 
         for(WeatherParserConfig.WPCitem item:configElement.getPathItems()){

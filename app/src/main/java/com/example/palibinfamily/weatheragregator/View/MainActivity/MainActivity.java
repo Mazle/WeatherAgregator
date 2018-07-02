@@ -20,9 +20,11 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
 //import com.example.palibinfamily.weatheragregator.R;
 
+import com.example.palibinfamily.weatheragregator.Model.LocationProvider.Locator;
 import com.example.palibinfamily.weatheragregator.Model.WeatherSnapshot;
 import com.example.palibinfamily.weatheragregator.Presenter.MainActivityPresenter;
 //import com.example.palibinfamily.weatheragregator.TmpClassesForTesting.Dummies;
@@ -65,8 +67,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+//        setSupportActionBar(toolbar);
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
@@ -113,6 +115,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //        });
 
         daysBar.setWeatherDtata(weatherList);
+
+        TextView textView = findViewById(R.id.textView);
+        Locator locator = new Locator();
+        textView.setText(locator.getCityName());
     }
 
 

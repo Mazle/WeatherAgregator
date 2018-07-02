@@ -5,7 +5,8 @@ import java.util.List;
 public class WeatherParserConfig {
     public enum ParseType{
         num,
-        className
+        className,
+        id
     }
 
     public enum ResultType{

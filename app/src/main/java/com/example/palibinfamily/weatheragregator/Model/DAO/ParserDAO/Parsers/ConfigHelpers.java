@@ -293,4 +293,18 @@ public class ConfigHelpers {
         return new FullWeatherParserConfig(parameters);
     }
 
+    public static WeatherParserConfig getConfig2ip(){
+
+        ArrayList<WeatherParserConfig.WPCitem> classList = new ArrayList<>();
+
+        classList.add(new WeatherParserConfig.WPCitem(WeatherParserConfig.ParseType.className,"ip-info-entry__value",4));
+
+
+        WeatherParserConfig config = new WeatherParserConfig();
+        config.setUrl("https://2ip.ru/");
+        config.setPathItems(classList);
+
+        return config;
+    }
+
 }
