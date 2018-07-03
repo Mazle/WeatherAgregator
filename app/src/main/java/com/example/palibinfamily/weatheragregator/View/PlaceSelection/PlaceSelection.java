@@ -52,7 +52,7 @@ public class PlaceSelection extends AppCompatActivity implements AdapterView.OnI
                 break;}
             case R.id.spinner3 :{
                 locationItem selected = (locationItem) parent.getItemAtPosition(position);
-                Toast.makeText(getApplicationContext(), "state " + selected.name + " id " + selected.id, Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "city " + selected.name + " id " + selected.id, Toast.LENGTH_LONG).show();
                 //http://www.gosigmaway.com/api/ca_api/api.php?type=getCities&countryId=181&stateId=3067
                 city = selected;
                 break;}

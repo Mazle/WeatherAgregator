@@ -42,6 +42,7 @@ public class DaysBar extends View {
 
     public void setWeatherDtata(ArrayList<WeatherSnapshot> weatherDtata) {
         this.weatherDtata = weatherDtata;
+        this.postInvalidate();
     }
 
     public ViewPager getViewPager() {
@@ -55,8 +56,8 @@ public class DaysBar extends View {
 
     public void setPosition(int position) {
         this.position = position;
-        this.invalidate();
         Log.d(TAG,"position : " + position);
+        this.postInvalidate();
     }
 
     private void loadIcons(){
@@ -118,47 +119,51 @@ public class DaysBar extends View {
         canvas.drawRect(0,0,(width / 7) * (position ),height, paint);
         canvas.drawRect((width / 7) * (position + 1),0,(width ),height, paint);
         Resources res = getResources();
-
-        for (int i = 0; i < 7; i++) {
-            WeatherSnapshot snap = weatherDtata.get(i);
-            if (snap != null) {
-                Drawable dr = smallIcons.get(ViewHelpers.WeatherType.clear);
-
-                if (snap.isSnowing()) {
-                    dr = smallIcons.get(ViewHelpers.WeatherType.snow);
+        if (weatherDtata != null) {
+            for (int i = 0; i < 7; i++) {
+                WeatherSnapshot snap = null;
+                if (i < weatherDtata.size()) {
+                    snap = weatherDtata.get(i);
                 }
-                if (snap.isRaining()) {
-                    dr = smallIcons.get(ViewHelpers.WeatherType.storm);
+                if (snap != null) {
+                    Drawable dr = smallIcons.get(ViewHelpers.WeatherType.clear);
+
+                    if (snap.isSnowing()) {
+                        dr = smallIcons.get(ViewHelpers.WeatherType.snow);
+                    }
+                    if (snap.isRaining()) {
+                        dr = smallIcons.get(ViewHelpers.WeatherType.storm);
+                    }
+
+                    dr.setBounds((width / 7) * (i), 0, (width / 7) * (i + 1), 100);
+                    dr.draw(canvas);
+                    int dayOfWeek = 7;
+                    int date = -1;
+                    if (snap.getDate() != null) {
+                        Log.d(TAG, "onDraw: " + snap.getDate().toLocaleString());
+                        Calendar calendar = Calendar.getInstance();
+                        calendar.setTime(snap.getDate());
+                        calendar.setFirstDayOfWeek(Calendar.MONDAY);
+                        dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK) - 1;
+                        date = calendar.getTime().getDate();
+                    } else {
+                        Log.d(TAG, "onDraw: snap.getDate() == null ????????????????");
+                    }
+                    paint.setColor(0xFFFFFFFF);
+                    paintSmallBlur.setColor(0xFF000000);
+
+                    setTextSizeForWidth(paint, (width / 14), "12");
+                    setTextSizeForWidth(paintSmallBlur, (width / 14), "12");
+
+                    canvas.drawText("" + snap.getTemperature(), (width / 7) * (i) + 25, (float) (height * 0.45), paintSmallBlur);
+                    canvas.drawText("" + snap.getTemperature(), (width / 7) * (i) + 25, (float) (height * 0.45), paint);
+
+                    canvas.drawText("" + ViewHelpers.days[dayOfWeek], (width / 7) * (i) + (width / 28), (float) (height * 0.65), paintSmallBlur);
+                    canvas.drawText("" + ViewHelpers.days[dayOfWeek], (width / 7) * (i) + (width / 28), (float) (height * 0.65), paint);
+
+                    canvas.drawText("" + date, (width / 7) * (i) + 25, (float) (height * 0.85), paintSmallBlur);
+                    canvas.drawText("" + date, (width / 7) * (i) + 25, (float) (height * 0.85), paint);
                 }
-
-                dr.setBounds((width / 7) * (i), 0, (width / 7) * (i + 1), 100);
-                dr.draw(canvas);
-                int dayOfWeek = 7;
-                int date = -1;
-                if (snap.getDate() != null) {
-                    Log.d(TAG, "onDraw: "+ snap.getDate().toLocaleString());
-                    Calendar calendar = Calendar.getInstance();
-                    calendar.setTime(snap.getDate());
-                    calendar.setFirstDayOfWeek(Calendar.MONDAY);
-                    dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK) - 1;
-                    date = calendar.getTime().getDate();
-                }else{
-                    Log.d(TAG, "onDraw: snap.getDate() == null ????????????????");
-                }
-                paint.setColor(0xFFFFFFFF);
-                paintSmallBlur.setColor(0xFF000000);
-
-                setTextSizeForWidth(paint, (width / 14), "12");
-                setTextSizeForWidth(paintSmallBlur, (width / 14), "12");
-
-                canvas.drawText("" + snap.getTemperature(), (width / 7) * (i) + 25, (float) (height * 0.45), paintSmallBlur);
-                canvas.drawText("" + snap.getTemperature(), (width / 7) * (i) + 25, (float) (height * 0.45), paint);
-
-                canvas.drawText("" + ViewHelpers.days[dayOfWeek], (width / 7) * (i) + (width / 28), (float) (height * 0.65), paintSmallBlur);
-                canvas.drawText("" + ViewHelpers.days[dayOfWeek], (width / 7) * (i) + (width / 28), (float) (height * 0.65), paint);
-
-                canvas.drawText("" + date, (width / 7) * (i) + 25, (float) (height * 0.85), paintSmallBlur);
-                canvas.drawText("" + date, (width / 7) * (i) + 25, (float) (height * 0.85), paint);
             }
         }
     }
@@ -197,7 +202,7 @@ public class DaysBar extends View {
                         "of current screen element");
                 break;
         }
-
+        this.postInvalidate();
         return true;
     }
 

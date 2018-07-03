@@ -2,6 +2,7 @@ package com.example.palibinfamily.weatheragregator.View.MainActivity;
 
 import android.annotation.SuppressLint;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.ActivityInfo;
@@ -33,12 +34,13 @@ import com.example.palibinfamily.weatheragregator.View.MainActivity.Activities.M
 import com.example.palibinfamily.weatheragregator.R;
 import com.example.palibinfamily.weatheragregator.View.PlaceSelection.PlaceSelection;
 import com.example.palibinfamily.weatheragregator.View.Settings.SettingsActivity;
+import com.example.palibinfamily.weatheragregator.View.WeatherView;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener, ViewPager.OnPageChangeListener {
+public class MainActivity extends AppCompatActivity implements WeatherView, View.OnClickListener, ViewPager.OnPageChangeListener {
     boolean bound = false;
     ServiceConnection sConn;
     Intent intent;
@@ -103,11 +105,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         };
 
+        TextView textView = findViewById(R.id.textView);
+        Locator locator = new Locator();
+        textView.setText(locator.getCityName());
+
         DaysBar daysBar = findViewById(R.id.bottomDaysBar);
         daysBar.setViewPager(mViewPager);
-
+        Log.d(LOG_TAG, "MainActivitypresenter beforecreated");
         presenter = new MainActivityPresenter(this);
-        weatherList = presenter.getWeatherValuesList();
+        Log.d(LOG_TAG, "MainActivitypresenter aftercreated");
+//        weatherList = presenter.getWeatherValuesList();
 //        weatherList.sort(new Comparator<WeatherSnapshot>() {
 //            @Override
 //            public int compare(WeatherSnapshot o1, WeatherSnapshot o2) {
@@ -115,11 +122,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //            }
 //        });
 
-        daysBar.setWeatherDtata(weatherList);
+//        daysBar.setWeatherDtata(weatherList);
 
-        TextView textView = findViewById(R.id.textView);
-        Locator locator = new Locator();
-        textView.setText(locator.getCityName());
+
+        Log.d(LOG_TAG, "MainActivity created");
     }
 
 
@@ -195,6 +201,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
+    @Override
+    public void update(ArrayList<WeatherSnapshot> snapShots) {
+        weatherList = snapShots;
+        DaysBar daysBar = findViewById(R.id.bottomDaysBar);
+        daysBar.setWeatherDtata(weatherList);
+
+//        //TODO: выбрать что-то одно
+//        daysBar.refreshDrawableState();
+//        daysBar.postInvalidateDelayed(10);
+    }
+
+    @Override
+    public Context getViewContext() {
+        return getApplicationContext();
+    }
+
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
      * one of the sections/tabs/pages.
@@ -210,10 +232,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
             WeatherSnapshot snapshot = null;
+            Log.d(LOG_TAG, "SectionsPagerAdapter getItem " + position);
+            if ((weatherList != null)&&(position + 1  < weatherList.size())) {
+                if (presenter != null) {
+                    try {
+                        snapshot = presenter.getSnapshotFromDayNumber(position);
+                    }catch (Exception e){
 
-            if (position + 1 <= weatherList.size()){
-//                snapshot = weatherList.get(position);
-                snapshot = presenter.getSnapshotFromDayNumber(position);
+                    }
+                }
             }
 
             return MainScreen.newInstance(position + 1,snapshot);

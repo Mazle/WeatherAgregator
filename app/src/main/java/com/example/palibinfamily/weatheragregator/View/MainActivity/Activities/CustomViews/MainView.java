@@ -44,19 +44,20 @@ public class MainView extends View {
 
     public void setSnapShot(WeatherSnapshot snapShot) {
         this.snapShot = snapShot;
-        if (snapShot.getHumidity() > Integer.MIN_VALUE) {
-            extendedInfo.add(getResources().getString(R.string.getHumidity) + snapShot.getHumidity() + getResources().getString(R.string.getHumidityEnd));
+        if (snapShot != null) {
+            if (snapShot.getHumidity() > Integer.MIN_VALUE) {
+                extendedInfo.add(getResources().getString(R.string.getHumidity) + snapShot.getHumidity() + getResources().getString(R.string.getHumidityEnd));
+            }
+            if (snapShot.getPressure() > Integer.MIN_VALUE) {
+                extendedInfo.add(getResources().getString(R.string.getPressure) + snapShot.getPressure() + getResources().getString(R.string.getPressureEnd));
+            }
+            if (snapShot.getWindSpeed() > Integer.MIN_VALUE) {
+                extendedInfo.add(getResources().getString(R.string.getWindSpeed) + snapShot.getWindSpeed() + getResources().getString(R.string.getWindSpeedEnd));
+            }
+            if (snapShot.getWindDirection() != null) {
+                extendedInfo.add(getResources().getString(R.string.getWindDirection) + snapShot.getWindDirection());
+            }
         }
-        if (snapShot.getPressure() > Integer.MIN_VALUE) {
-            extendedInfo.add(getResources().getString(R.string.getPressure) + snapShot.getPressure() + getResources().getString(R.string.getPressureEnd));
-        }
-        if (snapShot.getWindSpeed() > Integer.MIN_VALUE) {
-            extendedInfo.add(getResources().getString(R.string.getWindSpeed) + snapShot.getWindSpeed() + getResources().getString(R.string.getWindSpeedEnd) );
-        }
-        if (snapShot.getWindDirection() != null) {
-            extendedInfo.add(getResources().getString(R.string.getWindDirection) + snapShot.getWindDirection());
-        }
-
         Random random = new Random();
         switch (random.nextInt(4)){
             case 0:{

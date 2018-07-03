@@ -5,10 +5,11 @@ import android.util.Log;
 import android.view.View;
 
 import com.example.palibinfamily.weatheragregator.Helpers.DateHelper;
-import com.example.palibinfamily.weatheragregator.Model.DAO.DAOFacade;
+import com.example.palibinfamily.weatheragregator.Model.DAO.*;
 import com.example.palibinfamily.weatheragregator.Model.WeatherSnapshot;
 import com.example.palibinfamily.weatheragregator.MyApp;
 import com.example.palibinfamily.weatheragregator.Preferences;
+import com.example.palibinfamily.weatheragregator.View.WeatherView;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -18,6 +19,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 /*
 * требуется передача активити в конструкторе презентера
@@ -26,21 +28,21 @@ import java.util.Map;
 * todo написать удаление старых дат из LinkedHashMap
  */
 
-public class MainActivityPresenter {
+public class MainActivityPresenter implements WeatherAsyncLoaderClallbackListener{
     private final String TAG = "MainActivityPresenter";
     // Ключ - дата, в формате DateHelper.formatDMY(date)
     private LinkedHashMap<String,ArrayList<WeatherSnapshot>> contentMapFromSites;
     private LinkedHashMap<String,WeatherSnapshot> averagedWeatherValues;
     //карта соответствия порядкового номера дня соответствующей дате
     private LinkedHashMap<Integer,String> stringDatesInWeatherValues = new LinkedHashMap<>();
-    private AppCompatActivity view;
+    private WeatherView view;
 
-    public MainActivityPresenter(AppCompatActivity view) {
+    public MainActivityPresenter(WeatherView view) {
         this.view = view;
         //todo добавить настройку количества дней обзора
         Log.d(TAG, "MainActivityPresenter: ");
         downloadWeatherValues(7);
-
+        view.update(getWeatherValuesList());
     }
 
     public ArrayList<WeatherSnapshot> getWeatherValuesList() {
@@ -71,7 +73,7 @@ public class MainActivityPresenter {
     }
     //Дает список выбранных в настройках сайтов в качестве источников
     private ArrayList<String> getSiteTitlesFromPreferences() {
-        ArrayList<String> siteTitles = ((MyApp)view.getApplicationContext()).getPreferences().getCheckedTitles();
+        ArrayList<String> siteTitles = ((MyApp)view.getViewContext()).getPreferences().getCheckedTitles();
         return siteTitles;
     }
     //Создает map по датам, заполняя значения list'ом из прогнозов по текущей дате из разных сайтов
@@ -87,16 +89,24 @@ public class MainActivityPresenter {
             while (daysCount< dayAmount) {
                 //Todo РЕАЛИЗОВАТЬ. определить удобный способ и воткнуть подтягиватель данных о времени
                 //Заполняем map пустыми list
+
+
                 String dateKey = DateHelper.stringDMYFormat(iteratorDate, ".");
-                // задаем соответствие между порядковыми номероми в листе и значениями ключей в LinkedHashMap
-                //todo БАГФИКС.сделать так, чтобы данные не перезаписывались при каждой итерации
+//                // задаем соответствие между порядковыми номероми в листе и значениями ключей в LinkedHashMap
+//                //todo БАГФИКС.сделать так, чтобы данные не перезаписывались при каждой итерации
                 if (iterationNumber==0) {
                     stringDatesInWeatherValues.put(daysCount, dateKey);
                     contentMapFromSites.put(dateKey, new ArrayList<WeatherSnapshot>());
                 }
-                //пустые list в map заполняем данными с сайтов по ключу даты формата string
-                WeatherSnapshot snapshot = DAOFacade.getWeatherFrom(title,iteratorDate);
-                contentMapFromSites.get(dateKey).add(snapshot);
+//                //пустые list в map заполняем данными с сайтов по ключу даты формата string
+//                WeatherSnapshot snapshot = DAOFacade.getWeatherFrom(title,iteratorDate);
+//                contentMapFromSites.get(dateKey).add(snapshot);
+
+                WeatherAsyncLoader loader = new WeatherAsyncLoader(this);
+                GregorianCalendar localCalendar = new GregorianCalendar();
+                localCalendar.setTime(iteratorDate.getTime());
+                loader.execute(null, title, localCalendar);
+
                 DateHelper.increaseDays(iteratorDate,1);
                 daysCount++;
                 Log.d(TAG, "getСontentFromSites: daysCount = " + daysCount);
@@ -107,27 +117,61 @@ public class MainActivityPresenter {
     }
    //вычисляет среднее значение для всех Snapshots в map
     private void getAverageValuesFromAllSnapshotsByDates(LinkedHashMap<String,ArrayList<WeatherSnapshot>> map) {
-        for (Map.Entry<String,ArrayList<WeatherSnapshot>> entry: map.entrySet()) {
-            WeatherSnapshotAgregator agregator = new WeatherSnapshotAgregator();
-            WeatherSnapshot snapshotForAveraging = new WeatherSnapshot();
-            for (WeatherSnapshot snapshot: entry.getValue()) {
-                    agregator.temperature.add(snapshot.getTemperature());
-                    agregator.windSpeed.add(snapshot.getWindSpeed());
-                    agregator.windDirection.add(snapshot.getWindDirection());
-                    agregator.humidity.add(snapshot.getHumidity());
-                    agregator.pressure.add(snapshot.getPressure());
-                    agregator.cloudCover.add(snapshot.getCloudCover());
-                    agregator.isRaining.add(snapshot.isRaining());
-                    agregator.isSnowing.add(snapshot.isSnowing());
-                    snapshotForAveraging.setDate(snapshot.getDate());
+        if (map != null) {
+            for (Map.Entry<String, ArrayList<WeatherSnapshot>> entry : map.entrySet()) {
+                WeatherSnapshotAgregator agregator = new WeatherSnapshotAgregator();
+                WeatherSnapshot snapshotForAveraging = new WeatherSnapshot();
+                if (entry.getValue() != null) {
+                    for (WeatherSnapshot snapshot : entry.getValue()) {
+                        agregator.temperature.add(snapshot.getTemperature());
+                        agregator.windSpeed.add(snapshot.getWindSpeed());
+                        agregator.windDirection.add(snapshot.getWindDirection());
+                        agregator.humidity.add(snapshot.getHumidity());
+                        agregator.pressure.add(snapshot.getPressure());
+                        agregator.cloudCover.add(snapshot.getCloudCover());
+                        agregator.isRaining.add(snapshot.isRaining());
+                        agregator.isSnowing.add(snapshot.isSnowing());
+                        snapshotForAveraging.setDate(snapshot.getDate());
 
-                    //TODO: дата дата
-                    agregator.date = snapshot.getDate();
+                        //TODO: дата дата
+                        agregator.date = snapshot.getDate();
+                    }
+                    if (averagedWeatherValues == null)
+                        averagedWeatherValues = new LinkedHashMap<>();
+                    averagedWeatherValues.put(entry.getKey(), agregator.averageToSnapshot(new WeatherSnapshot()));
                 }
-            if (averagedWeatherValues == null) averagedWeatherValues = new LinkedHashMap<>();
-            averagedWeatherValues.put(entry.getKey(),agregator.averageToSnapshot(new WeatherSnapshot()));
+            }
         }
     }
+
+    @Override
+    public void updateData(WeatherSnapshot snapShot) {
+        if (snapShot != null) {
+            GregorianCalendar calendar = new GregorianCalendar();
+            calendar.setTime(snapShot.getDate());
+            String dateKey = DateHelper.stringDMYFormat(calendar, ".");
+            Log.d(TAG, "updateData: dateKey " + dateKey);
+            // задаем соответствие между порядковыми номероми в листе и значениями ключей в LinkedHashMap
+            //todo БАГФИКС.сделать так, чтобы данные не перезаписывались при каждой итерации
+//            contentMapFromSites.put(dateKey, new ArrayList<WeatherSnapshot>());
+            contentMapFromSites.get(dateKey).add(snapShot);
+            getAverageValuesFromAllSnapshotsByDates(contentMapFromSites);
+
+//            ArrayList<WeatherSnapshot> tmp = new ArrayList<>();
+//            tmp.add(snapShot);
+            if (view != null) {
+                try {
+                    view.update(getWeatherValuesList());
+                }catch (Exception e){
+
+                }
+            }
+//            view.update(tmp);
+        }else{
+            Log.d(TAG, "updateData: snapshotnull");
+        }
+    }
+
     //класс, представляющий собой WeatherSnapshot, только в качестве полей - arrayList со значениями Полей других WeatherSnapshot
     private class WeatherSnapshotAgregator {
         ArrayList<Integer> temperature;
@@ -152,38 +196,53 @@ public class MainActivityPresenter {
         }
 
         private WeatherSnapshot averageToSnapshot(WeatherSnapshot snapshot){
-            snapshot.setTemperature(getIntegerAveragedValue(this.temperature));
-            snapshot.setWindSpeed(getIntegerAveragedValue(this.windSpeed));
-            //todo ЗАПЛАТКА.усреднить направление ветра
-            snapshot.setWindDirection("North");
-            //todo ЗАПЛАТКА.Усреднить дождь.
-            snapshot.setRaining(this.isRaining.get(0));
-            //todo ЗАПЛАТКА.усреднить снег
-            snapshot.setSnowing(this.isSnowing.get(0));
-            snapshot.setHumidity(getIntegerAveragedValue(this.humidity));
-            snapshot.setPressure(getIntegerAveragedValue(this.pressure));
-            //todo ЗАПЛАТКА. усреднить облачность.
-            snapshot.setCloudCover("облачно");
-            //TODO: ЗАТЫЫЫЫЫЫЫЫЫЫЫЧКА на дату и ветер.
-            snapshot.setDate(this.date);
-            snapshot.setWindDirection(this.windDirection.get(0));
+            try {
+                snapshot.setTemperature(getIntegerAveragedValue(this.temperature));
+                snapshot.setWindSpeed(getIntegerAveragedValue(this.windSpeed));
+                //todo ЗАПЛАТКА.усреднить направление ветра
+                snapshot.setWindDirection("North");
+                //todo ЗАПЛАТКА.Усреднить дождь.
+                snapshot.setRaining(this.isRaining.get(0));
+                //todo ЗАПЛАТКА.усреднить снег
+                snapshot.setSnowing(this.isSnowing.get(0));
+                snapshot.setHumidity(getIntegerAveragedValue(this.humidity));
+                snapshot.setPressure(getIntegerAveragedValue(this.pressure));
+                //todo ЗАПЛАТКА. усреднить облачность.
+                snapshot.setCloudCover("облачно");
+                //TODO: ЗАТЫЫЫЫЫЫЫЫЫЫЫЧКА на дату и ветер.
+                snapshot.setDate(this.date);
+                snapshot.setWindDirection(this.windDirection.get(0));
+            }catch (Exception e){
+
+            }
         return snapshot;
         }
         //Todo ПРОВЕРИТЬ. Будет ли так работать Jenerick.
         private Integer getIntegerAveragedValue(ArrayList<Integer> list) {
             Integer summ = 0;
-            for (Integer value:list) {
-                summ = summ + value;
+            try {
+                for (Integer value : list) {
+                    summ = summ + value;
+                }
+                //по моему здесь может таиться какая то подстава, но мне некогда читать по этой теме
+                // ага, division by zero например =)
+                summ = summ / list.size();
+            }catch (Exception e){
+
             }
-            //по моему здесь может таиться какая то подстава, но мне некогда читать по этой теме
-            return summ/list.size();
+            return summ;
         }
         private Double getDoubleAveragedValue(ArrayList<Double> list) {
             Double summ = 0d;
-            for (Double value:list) {
-                summ = summ + value;
+            try {
+                for (Double value:list) {
+                    summ = summ + value;
+                }
+                summ = summ / list.size();
+            }catch (Exception e){
+
             }
-            return summ/list.size();
+            return summ;
         }
     }
 
