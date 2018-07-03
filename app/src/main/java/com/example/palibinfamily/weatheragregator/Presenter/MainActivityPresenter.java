@@ -177,6 +177,7 @@ public class MainActivityPresenter implements WeatherAsyncLoaderClallbackListene
             // задаем соответствие между порядковыми номероми в листе и значениями ключей в LinkedHashMap
             //todo БАГФИКС.сделать так, чтобы данные не перезаписывались при каждой итерации
 //            contentMapFromSites.put(dateKey, new ArrayList<WeatherSnapshot>());
+            contentMapFromSites.get(dateKey).clear();
             contentMapFromSites.get(dateKey).add(snapShot);
             getAverageValuesFromAllSnapshotsByDates(contentMapFromSites);
 
