@@ -48,13 +48,14 @@ tools:context=".View.MainActivity.MainActivity">
 
         <TextView
             android:id="@+id/textView"
-            android:textSize="20sp"
-            android:textColor="@color/colorPrimary"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="10"
             android:background="@android:color/transparent"
-            android:text="TextView" />
+            android:onClick="onCityClick"
+            android:text="TextView"
+            android:textColor="@color/colorPrimary"
+            android:textSize="20sp" />
 
         <TextView
             android:id="@+id/textView2"

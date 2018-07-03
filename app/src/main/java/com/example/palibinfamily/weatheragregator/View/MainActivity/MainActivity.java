@@ -31,6 +31,7 @@ import com.example.palibinfamily.weatheragregator.Presenter.MainActivityPresente
 import com.example.palibinfamily.weatheragregator.View.MainActivity.Activities.CustomViews.DaysBar;
 import com.example.palibinfamily.weatheragregator.View.MainActivity.Activities.MainScreen;
 import com.example.palibinfamily.weatheragregator.R;
+import com.example.palibinfamily.weatheragregator.View.PlaceSelection.PlaceSelection;
 import com.example.palibinfamily.weatheragregator.View.Settings.SettingsActivity;
 
 import java.util.ArrayList;
@@ -154,6 +155,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //    public void onClickStop(View view) {
 //        stopService(new Intent(this, TestService.class));
 //    }
+
+    public void onCityClick(View view) {
+        Intent intent = new Intent(MainActivity.this, PlaceSelection.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+    }
+
     @Override
     public void onClick(View view) {
         Intent intent = new Intent(MainActivity.this, SettingsActivity.class);

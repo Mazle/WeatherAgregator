@@ -45,6 +45,8 @@ public class ParserHandler implements WeatherGetter {
             parser.getUrl("https://2ip.ru/");
             location = (parser.execXpathToString("html>body>div>div:eq(1)>div:eq(4)>div:eq(1)>div>table>tbody>tr:eq(3)>td"));
 
+//            location = "Россия, димитровград";
+
             Log.d(TAG, "doInBackground: location" + location);
             //TODO: вот это вот куда - нибудь вынести
 
