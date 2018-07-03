@@ -19,7 +19,7 @@ public class SettingsPresenter implements CompoundButton.OnCheckedChangeListener
 
     @Override
     public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-       // if (compoundButton.isChecked()&b)
+
     }
 
 
