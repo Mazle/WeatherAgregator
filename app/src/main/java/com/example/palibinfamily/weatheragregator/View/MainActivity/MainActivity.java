@@ -30,6 +30,7 @@ import com.example.palibinfamily.weatheragregator.Model.WeatherSnapshot;
 import com.example.palibinfamily.weatheragregator.Presenter.MainActivityPresenter;
 //import com.example.palibinfamily.weatheragregator.TmpClassesForTesting.Dummies;
 import com.example.palibinfamily.weatheragregator.View.MainActivity.Activities.CustomViews.DaysBar;
+import com.example.palibinfamily.weatheragregator.View.MainActivity.Activities.CustomViews.MainView;
 import com.example.palibinfamily.weatheragregator.View.MainActivity.Activities.MainScreen;
 import com.example.palibinfamily.weatheragregator.R;
 import com.example.palibinfamily.weatheragregator.View.PlaceSelection.PlaceSelection;
@@ -45,8 +46,12 @@ public class MainActivity extends AppCompatActivity implements WeatherView, View
     ServiceConnection sConn;
     Intent intent;
     final String LOG_TAG = "MainActivity";
-    private MainActivityPresenter presenter;
+    private static MainActivityPresenter presenter;
     private ArrayList<WeatherSnapshot> weatherList;
+
+    public static MainActivityPresenter getPresenter() {
+        return presenter;
+    }
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -80,6 +85,26 @@ public class MainActivity extends AppCompatActivity implements WeatherView, View
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
         mViewPager.addOnPageChangeListener(this);
+        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                Log.d(LOG_TAG, "onPageScrolled");
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                MainView mainView = findViewById(R.id.MainView);
+                if (mainView != null) {
+                    mainView.postInvalidate();
+                }
+                Log.d(LOG_TAG, "onPageScrolled postInvalidate");
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+                Log.d(LOG_TAG, "onPageScrollStateChanged " + state);
+            }
+        });
 
 //        mViewPager.setCurrentItem();
 //        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -205,11 +230,13 @@ public class MainActivity extends AppCompatActivity implements WeatherView, View
     public void update(ArrayList<WeatherSnapshot> snapShots) {
         weatherList = snapShots;
         DaysBar daysBar = findViewById(R.id.bottomDaysBar);
-        daysBar.setWeatherDtata(weatherList);
-
-//        //TODO: выбрать что-то одно
-//        daysBar.refreshDrawableState();
-//        daysBar.postInvalidateDelayed(10);
+        if (daysBar != null){
+            daysBar.setWeatherDtata(weatherList);
+        }
+        MainView mainView = findViewById(R.id.MainView);
+        if (mainView != null) {
+            mainView.postInvalidate();
+        }
     }
 
     @Override
@@ -243,7 +270,7 @@ public class MainActivity extends AppCompatActivity implements WeatherView, View
                 }
             }
 
-            return MainScreen.newInstance(position + 1,snapshot);
+            return MainScreen.newInstance(position+1,snapshot);
             //return PlaceholderFragment.newInstance(position + 1);
         }
 

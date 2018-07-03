@@ -15,8 +15,10 @@ import android.view.View;
 
 
 import com.example.palibinfamily.weatheragregator.Model.WeatherSnapshot;
+import com.example.palibinfamily.weatheragregator.Presenter.MainActivityPresenter;
 import com.example.palibinfamily.weatheragregator.R;
 import com.example.palibinfamily.weatheragregator.View.MainActivity.Activities.ViewHelpers;
+import com.example.palibinfamily.weatheragregator.View.MainActivity.MainActivity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,16 +37,34 @@ public class MainView extends View {
     private Paint paintSmallBlur = new Paint();
     private ArrayList<String> extendedInfo = new ArrayList<>();
     private Drawable fon = null;
-
     private Random random = new Random();
-
     public WeatherSnapshot getSnapShot() {
         return snapShot;
+    }
+    private MainActivityPresenter presenter;
+    private int dayNumber = 0;
+
+    public int getDayNumber() {
+        return dayNumber;
+    }
+
+    public void setDayNumber(int dayNumber) {
+        this.dayNumber = dayNumber;
+    }
+
+    public MainActivityPresenter getPresenter() {
+        return presenter;
+    }
+
+    public void setPresenter(MainActivityPresenter presenter) {
+        this.presenter = presenter;
     }
 
     public void setSnapShot(WeatherSnapshot snapShot) {
         this.snapShot = snapShot;
         if (snapShot != null) {
+            extendedInfo.clear();
+
             if (snapShot.getHumidity() > Integer.MIN_VALUE) {
                 extendedInfo.add(getResources().getString(R.string.getHumidity) + snapShot.getHumidity() + getResources().getString(R.string.getHumidityEnd));
             }
@@ -58,21 +78,7 @@ public class MainView extends View {
                 extendedInfo.add(getResources().getString(R.string.getWindDirection) + snapShot.getWindDirection());
             }
         }
-        Random random = new Random();
-        switch (random.nextInt(4)){
-            case 0:{
-                fon = ContextCompat.getDrawable(getContext(), R.drawable.img_1);
-                break;}
-            case 1:{
-                fon = ContextCompat.getDrawable(getContext(), R.drawable.img_2);
-                break;}
-            case 2:{
-                fon = ContextCompat.getDrawable(getContext(), R.drawable.img_3);
-                break;}
-            case 3:{
-                fon = ContextCompat.getDrawable(getContext(), R.drawable.img_4);
-                break;}
-        }
+
 
     }
 
@@ -90,11 +96,28 @@ public class MainView extends View {
 
         paintSmallBlur.setShadowLayer(4, 1, 1, Color.BLACK);
         setLayerType(LAYER_TYPE_SOFTWARE, paintSmallBlur);
+
+        Random random = new Random();
+        switch (random.nextInt(4)){
+            case 0:{
+                fon = ContextCompat.getDrawable(getContext(), R.drawable.img_1);
+                break;}
+            case 1:{
+                fon = ContextCompat.getDrawable(getContext(), R.drawable.img_2);
+                break;}
+            case 2:{
+                fon = ContextCompat.getDrawable(getContext(), R.drawable.img_3);
+                break;}
+            case 3:{
+                fon = ContextCompat.getDrawable(getContext(), R.drawable.img_4);
+                break;}
+        }
     }
 
-    public MainView(Context context) {
+    public MainView(Context context, int dayNumber) {
         super(context);
         loadIcons();
+        this.dayNumber = dayNumber;
     }
 
     public MainView(Context context, @Nullable AttributeSet attrs) {
@@ -173,6 +196,10 @@ public class MainView extends View {
 //        canvas.drawRect(0,0,width, height, paintNormal);
 
         Drawable dr = icons.get(ViewHelpers.WeatherType.clear);
+        if (presenter != null) {
+            setSnapShot(presenter.getSnapshotFromDayNumber(dayNumber));
+            Log.d(TAG,"dayNumber : " + dayNumber);
+        }
         if (snapShot != null) {
             if (snapShot.isSnowing()) {
                 dr = icons.get(ViewHelpers.WeatherType.snow);

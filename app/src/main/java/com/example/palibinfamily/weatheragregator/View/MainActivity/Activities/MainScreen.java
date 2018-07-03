@@ -8,10 +8,12 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.palibinfamily.weatheragregator.Model.WeatherSnapshot;
+import com.example.palibinfamily.weatheragregator.Presenter.MainActivityPresenter;
 import com.example.palibinfamily.weatheragregator.R;
 import com.example.palibinfamily.weatheragregator.TmpClassesForTesting.Dummies;
 import com.example.palibinfamily.weatheragregator.View.MainActivity.Activities.CustomViews.MainView;
 
+import com.example.palibinfamily.weatheragregator.View.MainActivity.MainActivity;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -67,7 +69,8 @@ public class MainScreen extends Fragment {
         MainView mainView = rootView.findViewById(R.id.MainView);
         Log.d("PlaceholderFragment","snap: " + snap);
         mainView.setSnapShot(snap);
-
+        mainView.setDayNumber(bundle.getInt(ARG_SECTION_NUMBER)-1);
+        mainView.setPresenter(MainActivity.getPresenter());
         return rootView;
     }
 
