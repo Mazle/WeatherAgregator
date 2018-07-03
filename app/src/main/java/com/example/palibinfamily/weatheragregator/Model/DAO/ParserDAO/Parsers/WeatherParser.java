@@ -53,7 +53,7 @@ public class WeatherParser {
         List<Attribute> result = null;
         if (xpath != null){
             Elements elements = doc.select(xpath);
-            //System.out.println(el2.text());
+            //System.out.println(elements.toString());
             result = elements.first().attributes().asList();
         }
         return result;
@@ -61,9 +61,10 @@ public class WeatherParser {
 
     public String execXpathToString(String xpath){
         String result = null;
+//        System.out.println(xpath + ":" + doc);
         if ((xpath != null)&&(doc != null)){
             Elements elements = doc.select(xpath);
-            //System.out.println(el2.text());
+//            System.out.println(xpath + ":" + elements.text());
             result = elements.text();
         }
         return result;
@@ -228,6 +229,7 @@ public class WeatherParser {
             String execResult;
             switch (configElement.getKey()){
                 case "temperature":{
+//                    System.out.println(configElement.getValue().getXpath());
                     execResult = execXpathToString(configElement.getValue().getXpath());
                     if (execResult != null) {
                         try {
