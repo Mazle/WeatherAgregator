@@ -21,6 +21,7 @@ import java.util.Map;
 * требуется передача активити в конструкторе презентера
 * в  презентере берется в расчет, что активити - наследник класса android.support.v7.app.AppCompatActivity;
 * ВОПРОС: как усреднять Направление ветра?
+* Все даты GregorianCalender пприводятся к виду DateHelper.getDMYCopy(date), то есть год, месяц, день
 * todo написать удаление старых дат из hashMap
  */
 
@@ -113,7 +114,7 @@ public class MainActivityPresenter {
                     agregator.cloudCover.add(snapshot.getCloudCover());
                     agregator.isRaining.add(snapshot.isRaining());
                     agregator.isSnowing.add(snapshot.isSnowing());
-                    snapshotForAveraging.setDate(snapshot.getDate());
+                    agregator.date =snapshot.getDate();
                 }
             if (averagedWeatherValues == null) averagedWeatherValues = new HashMap<>();
             averagedWeatherValues.put(entry.getKey(),agregator.averageToSnapshot(new WeatherSnapshot()));
@@ -155,6 +156,7 @@ public class MainActivityPresenter {
             snapshot.setPressure(getIntegerAveragedValue(this.pressure));
             //todo ЗАПЛАТКА. усреднить облачность.
             snapshot.setCloudCover("облачно");
+            snapshot.setDate(DateHelper.getDMYCopy(date));
         return snapshot;
         }
         //Todo ПРОВЕРИТЬ. Будет ли так работать Jenerick.

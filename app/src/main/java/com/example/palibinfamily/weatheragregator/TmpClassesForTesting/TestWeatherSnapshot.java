@@ -2,6 +2,8 @@ package com.example.palibinfamily.weatheragregator.TmpClassesForTesting;
 
 import com.example.palibinfamily.weatheragregator.Model.WeatherSnapshot;
 
+import java.util.GregorianCalendar;
+
 public class TestWeatherSnapshot extends WeatherSnapshot {
     public TestWeatherSnapshot() {
         temperature = -50 + (int) (Math.random()*100);
@@ -12,5 +14,6 @@ public class TestWeatherSnapshot extends WeatherSnapshot {
         isRaining = true;
         isSnowing = false;
         cloudCover = "Облачно";
+        date = new GregorianCalendar();
     }
 }
