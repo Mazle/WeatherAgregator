@@ -9,7 +9,8 @@ public class MyApp extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        preferences = new Preferences();
+        preferences = new Preferences(this);
+
     }
 
     public Preferences getPreferences() {

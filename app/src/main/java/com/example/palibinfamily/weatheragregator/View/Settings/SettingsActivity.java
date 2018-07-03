@@ -27,6 +27,7 @@ public class SettingsActivity extends AppCompatActivity {
         presenter = new SettingsPresenter(this.getApplicationContext());
         LinearLayout sitesLinearLayout = (LinearLayout) findViewById(R.id.sitesLinearLayout);
         dynamicCheckBoxes = insertNewCheckBoxes(presenter.getSitesTitlesList(),sitesLinearLayout);
+
     }
 
     //заполняет наш контейнер чекбоксами и возвращает лист с id для созданных чекбоксов
