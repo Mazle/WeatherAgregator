@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.ActivityInfo;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.IBinder;
 
 import android.provider.ContactsContract;
@@ -37,9 +39,12 @@ import com.example.palibinfamily.weatheragregator.View.PlaceSelection.PlaceSelec
 import com.example.palibinfamily.weatheragregator.View.Settings.SettingsActivity;
 import com.example.palibinfamily.weatheragregator.View.WeatherView;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity implements WeatherView, View.OnClickListener, ViewPager.OnPageChangeListener {
     boolean bound = false;
@@ -130,9 +135,9 @@ public class MainActivity extends AppCompatActivity implements WeatherView, View
             }
         };
 
-        TextView textView = findViewById(R.id.textView);
-        Locator locator = new Locator();
-        textView.setText(locator.getCityName());
+//        TextView textView = findViewById(R.id.textView);
+//        Locator locator = new Locator();
+//        textView.setText(locator.getCityName());
 
         DaysBar daysBar = findViewById(R.id.bottomDaysBar);
         daysBar.setViewPager(mViewPager);
@@ -149,6 +154,20 @@ public class MainActivity extends AppCompatActivity implements WeatherView, View
 
 //        daysBar.setWeatherDtata(weatherList);
 
+        Geocoder geocoder = new Geocoder(getApplicationContext(),Locale.getDefault());
+        List<Address> addresses = new ArrayList<>();
+        try {
+            addresses = geocoder.getFromLocation(54.3147081,48.3618814,5);//uln
+//            addresses = geocoder.getFromLocation(54.6086886,48.9230989,5);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        String res = addresses.get(0).getLocality() + " " + addresses.get(0).getAdminArea() + " " + addresses.get(0).getCountryName() ;
+//        for (Address a:addresses){
+//            res += a.getLocality();
+//        }
+        Log.d(LOG_TAG, "Geocoder: " + res);
 
         Log.d(LOG_TAG, "MainActivity created");
     }
@@ -237,6 +256,12 @@ public class MainActivity extends AppCompatActivity implements WeatherView, View
         if (mainView != null) {
             mainView.postInvalidate();
         }
+    }
+
+    @Override
+    public void updateLocation(String newLocation) {
+        TextView textView = findViewById(R.id.textView);
+        textView.setText(newLocation);
     }
 
     @Override

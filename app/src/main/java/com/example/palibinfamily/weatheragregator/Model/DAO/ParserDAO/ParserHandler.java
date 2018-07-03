@@ -118,7 +118,7 @@ public class ParserHandler implements WeatherGetter {
 
 
     @Override
-    public WeatherSnapshot getWeatherFrom(String Title, GregorianCalendar date) {
+    public WeatherSnapshot getWeatherFrom(String Title, GregorianCalendar date, String location) {
         //todo: КОСТЯ. Напиши метод, который переданному заголовку сайта возвращает погоду с данного сайта за указанную дату
         String returnDateKey = DateHelper.stringDMYFormat(date, ".");
 //        Log.d(TAG, "getWeatherFrom: " + dateKey);
@@ -126,16 +126,16 @@ public class ParserHandler implements WeatherGetter {
 
 
         Log.d(TAG, "doInBackground: returnDateKey " + returnDateKey);
-        String location = "Россия, Ульяновск";
+//        String location = "Россия, Ульяновск";
         //Locator locator = new Locator();
         //location = locator.getCityName();
-        WeatherParser parser = new WeatherParser();
-        parser.getUrl("https://2ip.ru/");
-        location = (parser.execXpathToString("html>body>div>div:eq(1)>div:eq(4)>div:eq(1)>div>table>tbody>tr:eq(3)>td"));
-
-//            location = "Россия, димитровград";
-
-        Log.d(TAG, "doInBackground: location" + location);
+        WeatherParser parser = null;//new WeatherParser();
+//        parser.getUrl("https://2ip.ru/");
+//        location = (parser.execXpathToString("html>body>div>div:eq(1)>div:eq(4)>div:eq(1)>div>table>tbody>tr:eq(3)>td"));
+//
+////            location = "Россия, димитровград";
+//
+//        Log.d(TAG, "doInBackground: location" + location);
         //TODO: вот это вот куда - нибудь вынести
 
         Document doc = null;
@@ -153,6 +153,9 @@ public class ParserHandler implements WeatherGetter {
         ///////////////////////////////////////////
 
         FullWeatherParserConfig fullConfig = ConfigHelpers.getConfigGismeteo(href);
+
+//        Log.d(TAG, "doInBackground: href" + fullConfig.getParameters().get(0).getUrl());
+
         parser = new WeatherParser(fullConfig);
         WeatherSnapshot tmp = parser.getWeather();
         tmp.setDate(new Date());

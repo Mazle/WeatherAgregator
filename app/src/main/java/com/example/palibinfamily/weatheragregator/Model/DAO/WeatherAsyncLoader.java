@@ -20,12 +20,12 @@ public class WeatherAsyncLoader extends AsyncTask<Object,Object,WeatherSnapshot>
     @Override
     protected WeatherSnapshot doInBackground(Object... params) {
         //TODO: type & null check!!!!
-//        WeatherGetter weatherGetter = (WeatherGetter) params[0];
+        String location = (String) params[0];
         String siteTitle = (String) params[1];
         GregorianCalendar date = (GregorianCalendar) params[2];
         WeatherSnapshot weatherSnapshot = null;
         try {
-            weatherSnapshot = DAOFacade.getWeatherFrom(siteTitle,date);
+            weatherSnapshot = DAOFacade.getWeatherFrom(siteTitle,date,location);
         }catch (Exception e){
 
         }

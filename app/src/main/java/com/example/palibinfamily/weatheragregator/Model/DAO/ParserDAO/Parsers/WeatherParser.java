@@ -42,6 +42,7 @@ public class WeatherParser {
         if (url != null){
             try {
                 doc = Jsoup.parse(new URL(url), 15000);
+                Log.d(TAG, "getUrl: " + url);
             } catch (Exception e) {
 //                e.printStackTrace();
             }
@@ -60,7 +61,7 @@ public class WeatherParser {
 
     public String execXpathToString(String xpath){
         String result = null;
-        if (xpath != null){
+        if ((xpath != null)&&(doc != null)){
             Elements elements = doc.select(xpath);
             //System.out.println(el2.text());
             result = elements.text();

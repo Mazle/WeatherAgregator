@@ -16,10 +16,18 @@ import java.util.concurrent.Callable;
 
 public class Locator {
     private static final String TAG = "Locator";
-    String location = null;
-    AsyncLocator asyncLocator;
+    private AsyncLocator asyncLocator;
+    private LocatorListener listener;
 
-    private class AsyncLocator extends AsyncTask<String, Void, Void> {
+    public LocatorListener getListener() {
+        return listener;
+    }
+
+    public void setListener(LocatorListener listener) {
+        this.listener = listener;
+    }
+
+    private class AsyncLocator extends AsyncTask<String, Void, String> {
         private final String TAG = "inetLoader";
         @Override
         protected void onPreExecute() {
@@ -27,38 +35,32 @@ public class Locator {
             //запустить индикацию загрузки
         }
         @Override
-        protected Void doInBackground(String... params) {
+        protected String doInBackground(String... params) {
+            String location = null;
             WeatherParser parser = new WeatherParser();
             parser.getUrl("https://2ip.ru/");
             location = (parser.execXpathToString("html>body>div>div:eq(1)>div:eq(4)>div:eq(1)>div>table>tbody>tr:eq(3)>td"));
-            return null;
+            return location;
+//            return "Казань Россия";
             //params[0] - Ваша ссылка
             //Получение данных
         }
         @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
             //завершить индикацию загрузки
             //Устанавливаете необходимый текст
+            Log.d(TAG, "getCityName: " + result);
+            listener.updateLocation(result);
         }
     }
 
     public Locator() {
-        asyncLocator = new AsyncLocator();
-        asyncLocator.execute("");
     }
 
-    public String getCityName(){
-
-        while (location == null){
-            try {
-                Thread.sleep(10);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-
-        Log.d(TAG, "getCityName: " + location);
-        return location;
+    public String getLocationName(){
+        asyncLocator = new AsyncLocator();
+        asyncLocator.execute("");
+        return null;
     }
 }

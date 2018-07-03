@@ -6,6 +6,8 @@ import android.view.View;
 
 import com.example.palibinfamily.weatheragregator.Helpers.DateHelper;
 import com.example.palibinfamily.weatheragregator.Model.DAO.*;
+import com.example.palibinfamily.weatheragregator.Model.LocationProvider.Locator;
+import com.example.palibinfamily.weatheragregator.Model.LocationProvider.LocatorListener;
 import com.example.palibinfamily.weatheragregator.Model.WeatherSnapshot;
 import com.example.palibinfamily.weatheragregator.MyApp;
 import com.example.palibinfamily.weatheragregator.Preferences;
@@ -18,6 +20,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
@@ -28,7 +31,7 @@ import java.util.concurrent.CompletableFuture;
 * todo написать удаление старых дат из LinkedHashMap
  */
 
-public class MainActivityPresenter implements WeatherAsyncLoaderClallbackListener{
+public class MainActivityPresenter implements WeatherAsyncLoaderClallbackListener, LocatorListener{
     private final String TAG = "MainActivityPresenter";
     // Ключ - дата, в формате DateHelper.formatDMY(date)
     private LinkedHashMap<String,ArrayList<WeatherSnapshot>> contentMapFromSites;
@@ -36,13 +39,20 @@ public class MainActivityPresenter implements WeatherAsyncLoaderClallbackListene
     //карта соответствия порядкового номера дня соответствующей дате
     private LinkedHashMap<Integer,String> stringDatesInWeatherValues = new LinkedHashMap<>();
     private WeatherView view;
+    private String location;
 
     public MainActivityPresenter(WeatherView view) {
         this.view = view;
         //todo добавить настройку количества дней обзора
         Log.d(TAG, "MainActivityPresenter: ");
-        downloadWeatherValues(7);
-        view.update(getWeatherValuesList());
+        //сначала узнаем место. TODO: порыться в настройках
+
+        if (location == null){
+            Locator locator = new Locator();
+            locator.setListener(this);
+            locator.getLocationName();
+        }
+//        view.update(getWeatherValuesList());
     }
 
     public ArrayList<WeatherSnapshot> getWeatherValuesList() {
@@ -53,7 +63,18 @@ public class MainActivityPresenter implements WeatherAsyncLoaderClallbackListene
         return list;
     }
     public WeatherSnapshot getSnapshotFromDayNumber(int numb) {
-        return getWeatherValuesList().get(numb);
+        List<WeatherSnapshot> result = getWeatherValuesList();
+        if (result != null){
+            WeatherSnapshot snap = null;
+            try{
+                snap = result.get(numb);
+            }catch (Exception e){
+
+            }
+            return snap;
+        }else {
+            return null;
+        }
     }
 
     //возвращает map с усредненными прогнозами для
@@ -78,40 +99,42 @@ public class MainActivityPresenter implements WeatherAsyncLoaderClallbackListene
     }
     //Создает map по датам, заполняя значения list'ом из прогнозов по текущей дате из разных сайтов
     private LinkedHashMap<String,ArrayList<WeatherSnapshot>> getСontentFromSites(ArrayList<String> sitesTitles, int dayAmount) {
-        GregorianCalendar date = new GregorianCalendar();
-        date = DateHelper.formatDMY(date);
-        //todo BADPRACTICE.исправить через итераторы
-        //Знаю, что не good Practiсe , но вспоминать как работают итераторы времени нет
-        int iterationNumber = 0;
-        for (String title : sitesTitles) {
-            int daysCount = 0;
-            GregorianCalendar iteratorDate = DateHelper.getDMYCopy(date);
-            while (daysCount< dayAmount) {
-                //Todo РЕАЛИЗОВАТЬ. определить удобный способ и воткнуть подтягиватель данных о времени
-                //Заполняем map пустыми list
+        if (location != null) {
+            GregorianCalendar date = new GregorianCalendar();
+            date = DateHelper.formatDMY(date);
+            //todo BADPRACTICE.исправить через итераторы
+            //Знаю, что не good Practiсe , но вспоминать как работают итераторы времени нет
+            int iterationNumber = 0;
+            for (String title : sitesTitles) {
+                int daysCount = 0;
+                GregorianCalendar iteratorDate = DateHelper.getDMYCopy(date);
+                while (daysCount < dayAmount) {
+                    //Todo РЕАЛИЗОВАТЬ. определить удобный способ и воткнуть подтягиватель данных о времени
+                    //Заполняем map пустыми list
 
 
-                String dateKey = DateHelper.stringDMYFormat(iteratorDate, ".");
+                    String dateKey = DateHelper.stringDMYFormat(iteratorDate, ".");
 //                // задаем соответствие между порядковыми номероми в листе и значениями ключей в LinkedHashMap
 //                //todo БАГФИКС.сделать так, чтобы данные не перезаписывались при каждой итерации
-                if (iterationNumber==0) {
-                    stringDatesInWeatherValues.put(daysCount, dateKey);
-                    contentMapFromSites.put(dateKey, new ArrayList<WeatherSnapshot>());
-                }
+                    if (iterationNumber == 0) {
+                        stringDatesInWeatherValues.put(daysCount, dateKey);
+                        contentMapFromSites.put(dateKey, new ArrayList<WeatherSnapshot>());
+                    }
 //                //пустые list в map заполняем данными с сайтов по ключу даты формата string
 //                WeatherSnapshot snapshot = DAOFacade.getWeatherFrom(title,iteratorDate);
 //                contentMapFromSites.get(dateKey).add(snapshot);
 
-                WeatherAsyncLoader loader = new WeatherAsyncLoader(this);
-                GregorianCalendar localCalendar = new GregorianCalendar();
-                localCalendar.setTime(iteratorDate.getTime());
-                loader.execute(null, title, localCalendar);
+                    WeatherAsyncLoader loader = new WeatherAsyncLoader(this);
+                    GregorianCalendar localCalendar = new GregorianCalendar();
+                    localCalendar.setTime(iteratorDate.getTime());
+                    loader.execute(location, title, localCalendar);
 
-                DateHelper.increaseDays(iteratorDate,1);
-                daysCount++;
-                Log.d(TAG, "getСontentFromSites: daysCount = " + daysCount);
+                    DateHelper.increaseDays(iteratorDate, 1);
+                    daysCount++;
+                    Log.d(TAG, "getСontentFromSites: daysCount = " + daysCount);
+                }
+                iterationNumber++;
             }
-            iterationNumber++;
         }
         return contentMapFromSites;
     }
@@ -170,6 +193,14 @@ public class MainActivityPresenter implements WeatherAsyncLoaderClallbackListene
         }else{
             Log.d(TAG, "updateData: snapshotnull");
         }
+    }
+
+    @Override
+    public void updateLocation(String newLocation) {
+        this.location = newLocation;
+        //TODO: перекачть погоду
+        downloadWeatherValues(7);
+        view.updateLocation(newLocation);
     }
 
     //класс, представляющий собой WeatherSnapshot, только в качестве полей - arrayList со значениями Полей других WeatherSnapshot

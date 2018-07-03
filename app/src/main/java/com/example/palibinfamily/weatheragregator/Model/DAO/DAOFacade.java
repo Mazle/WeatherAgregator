@@ -16,11 +16,11 @@ public class DAOFacade {
     public static ArrayList getTitlesList () {
         return actualFactory.getSiteTitles();
     }
-    public static WeatherSnapshot getWeatherFrom(String SiteTitle, GregorianCalendar date) {
+    public static WeatherSnapshot getWeatherFrom(String SiteTitle, GregorianCalendar date, String location) {
         //TODO: и тут костыль
         WeatherSnapshot snap = null;
         while (snap == null){
-            snap = weatherGetter.getWeatherFrom(SiteTitle, date);
+            snap = weatherGetter.getWeatherFrom(SiteTitle, date, location);
             try {
                 Thread.sleep(10);
             } catch (InterruptedException e) {
