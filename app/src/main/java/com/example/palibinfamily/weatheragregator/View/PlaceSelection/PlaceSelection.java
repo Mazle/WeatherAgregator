@@ -11,6 +11,8 @@ import android.widget.Toast;
 
 import com.example.palibinfamily.weatheragregator.Model.DAO.ParserDAO.Parsers.WeatherParser;
 import com.example.palibinfamily.weatheragregator.R;
+import com.example.palibinfamily.weatheragregator.View.MainActivity.Activities.CustomViews.MainView;
+import com.example.palibinfamily.weatheragregator.View.MainActivity.MainActivity;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -24,7 +26,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 
-public class PlaceSelection extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+public class PlaceSelection extends AppCompatActivity implements AdapterView.OnItemSelectedListener, View.OnClickListener{
 
     // country spinner
     private locationItem country;
@@ -62,6 +64,11 @@ public class PlaceSelection extends AppCompatActivity implements AdapterView.OnI
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
 
+    }
+
+    @Override
+    public void onClick(View v) {
+        MainActivity.getPresenter().updateLocation(country.name + " " + city.name);
     }
 
     private class locationItem{

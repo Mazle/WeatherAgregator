@@ -208,7 +208,8 @@ public class MainActivity extends AppCompatActivity implements WeatherView, View
 
     public void onCityClick(View view) {
         Intent intent = new Intent(MainActivity.this, PlaceSelection.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
     }
 
