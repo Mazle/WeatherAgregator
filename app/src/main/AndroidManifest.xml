@@ -2,14 +2,26 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.palibinfamily.weatheragregator">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
+        android:name=".MyApp"
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/ic_launcher2"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/ic_launcher2_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme"
-        android:name=".MyApp">
+        android:theme="@style/AppTheme">
+        <activity
+            android:name=".View.MainActivity.MainActivity"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".TmpClassesForTesting.TestActivity"
             android:label="@string/app_name"
@@ -20,7 +32,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".View.PlaceSelection.PlaceSelection"></activity>
     </application>
 
-</manifest>
-    <!--android:name=".View.MainActivity.MainActivity"-->
+</manifest> <!-- android:name=".View.MainActivity.MainActivity" -->

@@ -16,6 +16,15 @@
     <string name="always">Всегда</string>
     <string name="once_a_day">Раз в день</string>
     <string name="once_a_hour">Каждый час</string>
+    <string name="never">Никогда</string>
 
-
+    <string name="getHumidity">Влажность: </string>
+    <string name="getHumidityEnd"> %</string>
+    <string name="getPressure">Давление: </string>
+    <string name="getPressureEnd"> мм.рт</string>
+    <string name="getWindSpeed">Скорость ветра: </string>
+    <string name="getWindSpeedEnd"> м/с</string>
+    <string name="getWindDirection">Направление ветра: </string>
+    <string name="getWindDirectionEnd"> </string>
+    <string name="mainScreenSettings">Настройки</string>
 </resources>
