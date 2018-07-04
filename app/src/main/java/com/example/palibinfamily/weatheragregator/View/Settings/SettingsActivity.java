@@ -12,6 +12,7 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
 import com.example.palibinfamily.weatheragregator.Model.DAO.DAOFacade;
+import com.example.palibinfamily.weatheragregator.Preferences;
 import com.example.palibinfamily.weatheragregator.Presenter.SettingsPresenter;
 import com.example.palibinfamily.weatheragregator.R;
 import com.example.palibinfamily.weatheragregator.View.MainActivity.MainActivity;
@@ -24,7 +25,6 @@ public class SettingsActivity extends AppCompatActivity {
     SettingsPresenter presenter;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        SettingsPresenter presenter;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.settings_activity);
         //todo ВОПРОС. Чем страшно получать applicationContext?
@@ -42,8 +42,11 @@ public class SettingsActivity extends AppCompatActivity {
         HashMap<String,CheckBox> checkBoxHashMap = new HashMap<>();
         for (String title:titles) {
             CheckBox cb = createCheckBox(title);
+            cb.setTag(title);
+            cb.setChecked(Preferences.getPreferencesInstant(this).findSavedChoice(title));
             cb.setLayoutParams(lParams);
             cb.setOnCheckedChangeListener(presenter);
+
             ll.addView(cb);
             checkBoxHashMap.put(title,cb);
 
