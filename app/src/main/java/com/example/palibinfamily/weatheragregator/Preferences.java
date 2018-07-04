@@ -8,6 +8,7 @@ import com.example.palibinfamily.weatheragregator.TmpClassesForTesting.TESTHelpe
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Set;
 
 public class Preferences {
     public final static String PREFERENCES_FILE_NAME = "WeatherAgregatorSettings";
@@ -29,8 +30,7 @@ public class Preferences {
     // todo проверить как работает
     public void saveChangesInPreferences (boolean isChecked, String KEY, int id) {
         //проверяем, существует ли в файле настроек данное множество. Если нет, то добавляем в множество id и записываем в файл
-        HashSet<String> dataSet = new HashSet<>();
-        sharedPreferences.getStringSet(KEY,dataSet);
+        HashSet<String> dataSet = (HashSet<String>) sharedPreferences.getStringSet(KEY,null);
         String stringValueOfId = Integer.toString(id);
         HashSet<String> updatedDataSet = new HashSet<>();
         if (dataSet==null) {
@@ -41,6 +41,7 @@ public class Preferences {
             if (!dataSet.contains(stringValueOfId) & isChecked) {
                 updatedDataSet = makeCopyFrom(dataSet);
                 updatedDataSet.add(stringValueOfId);
+                editor.putStringSet(KEY,updatedDataSet);
             }
             //Если с бокса сняли check, но он ессть в множестве - удалить его из множества
             if (dataSet.contains(stringValueOfId) & !isChecked) {
@@ -50,14 +51,13 @@ public class Preferences {
                     else editor.putStringSet(KEY,updatedDataSet);
             }
         }
-        editor.apply();
+        editor.commit();
 
     }
     public void saveChangesInPreferences (boolean isChecked, String KEY, Object OTag) {
         //проверяем, существует ли в файле настроек данное множество. Если нет, то добавляем в множество id и записываем в файл
-        HashSet<String> dataSet = new HashSet<>();
-        sharedPreferences.getStringSet(KEY,dataSet);
         //Todo ГОВНОКОД с приведением
+        HashSet<String> dataSet = (HashSet<String>) sharedPreferences.getStringSet(KEY,null);
         String tag = (String) OTag;
         HashSet<String> updatedDataSet = new HashSet<>();
         if (dataSet==null) {
@@ -68,6 +68,7 @@ public class Preferences {
             if (!dataSet.contains(tag) & isChecked) {
                 updatedDataSet = makeCopyFrom(dataSet);
                 updatedDataSet.add(tag);
+                editor.putStringSet(KEY,updatedDataSet);
             }
             //Если с бокса сняли check, но он ессть в множестве - удалить его из множества
             if (dataSet.contains(tag) & !isChecked) {
@@ -77,23 +78,22 @@ public class Preferences {
                 else editor.putStringSet(KEY,updatedDataSet);
             }
         }
-        editor.apply();
+        editor.commit();
 
     }
     //проверяет наличие информации о выборе по заданному сайту
-    public boolean findSavedChoice (String title){
-        HashSet<String> savedData = new HashSet<>();
+    public boolean findSavedChoice (String title, String KEY){
+        Set<String> savedData = sharedPreferences.getStringSet(KEY,null);
         boolean result = false;
-        if (sharedPreferences.contains(CHECKED_SITES_TITLES_SET_KEY)) {
-            sharedPreferences.getStringSet(CHECKED_SITES_TITLES_SET_KEY,savedData);
-            //todo ПРОВЕРИТЬ. хз будет ли так работать
+        if (savedData!=null) {
             result = savedData.contains(title) ? true : false;
         }
         return result;
     }
     public ArrayList<String> getCheckedTitles () {
-        //todo: DEV.Написать логику извлечения выбранных в настройках заголовках сайтов
-        return TESTHelper.getTestTitles();
+        Set<String> setFromFile = sharedPreferences.getStringSet(CHECKED_SITES_TITLES_SET_KEY,null);
+        HashSet<String> result = makeCopyFrom((HashSet<String>) setFromFile);
+        return new ArrayList<>(result);
     }
     public HashMap<String,Boolean> getCheckedWeatherParams() {
         //todo DEV.Написать логику извлечения выбранных в настройках параметров погоды
