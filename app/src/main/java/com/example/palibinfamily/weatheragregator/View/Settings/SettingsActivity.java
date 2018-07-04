@@ -32,9 +32,10 @@ public class SettingsActivity extends AppCompatActivity {
         LinearLayout sitesLinearLayout = (LinearLayout) findViewById(R.id.sitesLinearLayout);
         dynamicCheckBoxes = insertNewCheckBoxes(presenter.getSitesTitlesList(),sitesLinearLayout);
         insertToolbar();
-
-
+        checkChoosenWeatherProperties();
     }
+
+
 
     //заполняет наш контейнер чекбоксами и возвращает лист с id для созданных чекбоксов
     private HashMap<String,CheckBox> insertNewCheckBoxes(ArrayList<String> titles, LinearLayout ll) {
@@ -43,7 +44,7 @@ public class SettingsActivity extends AppCompatActivity {
         for (String title:titles) {
             CheckBox cb = createCheckBox(title);
             cb.setTag(title);
-            cb.setChecked(Preferences.getPreferencesInstant(this).findSavedChoice(title));
+            cb.setChecked(Preferences.getPreferencesInstant(this).findSavedChoice(title,Preferences.CHECKED_SITES_TITLES_SET_KEY));
             cb.setLayoutParams(lParams);
             cb.setOnCheckedChangeListener(presenter);
 
@@ -74,6 +75,35 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
     }
+    private void checkChoosenWeatherProperties() {
+        CheckBox temperatureBox = (CheckBox) findViewById(R.id.temperature);
+        boolean presenterValue;
+        presenterValue =presenter.getChoiceForPropertiy(temperatureBox.getId());
+        if (presenterValue) temperatureBox.setChecked(true);
+
+        CheckBox pressure = (CheckBox) findViewById(R.id.pressure);
+        presenterValue=presenter.getChoiceForPropertiy(pressure.getId());
+        if (presenterValue) pressure.setChecked(true);
+
+        CheckBox hummidity = (CheckBox) findViewById(R.id.hummidity);
+        presenterValue = presenter.getChoiceForPropertiy(hummidity.getId());
+        if (presenterValue) hummidity.setChecked(true);
+
+        CheckBox windSpeed = (CheckBox) findViewById(R.id.windSpeed);
+        presenterValue =presenter.getChoiceForPropertiy(windSpeed.getId());
+        if (presenterValue) windSpeed.setChecked(true);
+
+        CheckBox windDirection = (CheckBox) findViewById(R.id.wind_direction);
+        presenterValue = presenter.getChoiceForPropertiy(windDirection.getId());
+        if (presenterValue) windDirection.setChecked(true);
+
+        CheckBox precipitation = (CheckBox) findViewById(R.id.precipitation);
+        presenterValue = presenter.getChoiceForPropertiy(precipitation.getId());
+        if (presenterValue) precipitation.setChecked(true);
+    }
 
 
+    public void onWeatherPropertyClick(View view) {
+        presenter.onWeatherPropertyClick(view);
+    }
 }

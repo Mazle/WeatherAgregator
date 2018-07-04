@@ -1,6 +1,7 @@
 package com.example.palibinfamily.weatheragregator.Presenter;
 
 import android.content.Context;
+import android.view.View;
 import android.widget.CompoundButton;
 
 import com.example.palibinfamily.weatheragregator.Model.DAO.DAOFacade;
@@ -27,6 +28,17 @@ public class SettingsPresenter implements CompoundButton.OnCheckedChangeListener
                 compoundButton.getTag()
         );
     }
+    public boolean getChoiceForPropertiy(int id){
+        return Preferences.getPreferencesInstant(context).findSavedChoice(Integer.toString(id),Preferences.CHECKED_WEATHER_PROPERTIES_KEY);
+    }
 
 
+    public void onWeatherPropertyClick(View view) {
+        CompoundButton compoundButton = (CompoundButton) view;
+        Preferences.getPreferencesInstant(context).saveChangesInPreferences(
+                compoundButton.isChecked(),
+                Preferences.CHECKED_WEATHER_PROPERTIES_KEY,
+                compoundButton.getId()
+        );
+    }
 }
