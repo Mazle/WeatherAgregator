@@ -79,7 +79,7 @@ public class MainActivityPresenter implements WeatherAsyncLoaderClallbackListene
 
     //возвращает map с усредненными прогнозами для
     //todo Внедрить зависимости выдачи в активити от Локализации, Выбранных параметров отображения погоды, языка
-    private void downloadWeatherValues(int daysAmount) {
+    public void downloadWeatherValues(int daysAmount) {
         //Парсим сайты, выбранные в настройках
         initContentList(daysAmount);
         //усредняем результаты

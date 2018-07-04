@@ -11,6 +11,7 @@ import android.location.Geocoder;
 import android.os.IBinder;
 
 import android.provider.ContactsContract;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
@@ -46,7 +47,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 
-public class MainActivity extends AppCompatActivity implements WeatherView, View.OnClickListener, ViewPager.OnPageChangeListener {
+public class MainActivity extends AppCompatActivity implements WeatherView, View.OnClickListener, ViewPager.OnPageChangeListener{
     boolean bound = false;
     ServiceConnection sConn;
     Intent intent;
@@ -295,7 +296,7 @@ public class MainActivity extends AppCompatActivity implements WeatherView, View
                     }
                 }
             }
-
+            // делаем повеселее
             return MainScreen.newInstance(position+1,snapshot);
             //return PlaceholderFragment.newInstance(position + 1);
         }

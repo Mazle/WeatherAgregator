@@ -2,10 +2,12 @@ package com.example.palibinfamily.weatheragregator.View.MainActivity.Activities;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.palibinfamily.weatheragregator.Model.WeatherSnapshot;
 import com.example.palibinfamily.weatheragregator.Presenter.MainActivityPresenter;
@@ -23,10 +25,11 @@ import com.example.palibinfamily.weatheragregator.View.MainActivity.MainActivity
  * Use the {@link MainScreen#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class MainScreen extends Fragment {
+public class MainScreen extends Fragment implements SwipeRefreshLayout.OnRefreshListener
+{
     private static final String ARG_SECTION_NUMBER = "section_number";
     private final String TAG = "MainScreen";
-
+    SwipeRefreshLayout mSwipeRefreshLayout;
 //    private OnFragmentInteractionListener mListener;
 
     public MainScreen() {
@@ -71,7 +74,30 @@ public class MainScreen extends Fragment {
         mainView.setSnapShot(snap);
         mainView.setDayNumber(bundle.getInt(ARG_SECTION_NUMBER)-1);
         mainView.setPresenter(MainActivity.getPresenter());
+
+        mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.refresh);
+        mSwipeRefreshLayout.setOnRefreshListener(this);
+
         return rootView;
+    }
+
+    @Override
+    public void onRefresh() {
+// говорим о том, что собираемся начать
+//        Toast.makeText(getContext(), "refresh", Toast.LENGTH_SHORT).show();
+//        SwipeRefreshLayout mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.refresh);
+        // начинаем показывать прогресс
+        mSwipeRefreshLayout.setRefreshing(true);
+        MainActivity.getPresenter().downloadWeatherValues(7);
+        // ждем 3 секунды и прячем прогресс
+        mSwipeRefreshLayout.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mSwipeRefreshLayout.setRefreshing(false);
+                // говорим о том, что собираемся закончить
+//                Toast.makeText(getContext(), "refresh finished", Toast.LENGTH_SHORT).show();
+            }
+        }, 2000);
     }
 
 //    // TODO: Rename method, update argument and hook method into UI event
