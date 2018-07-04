@@ -16,6 +16,7 @@ import android.view.View;
 
 import com.example.palibinfamily.weatheragregator.Model.WeatherSnapshot;
 import com.example.palibinfamily.weatheragregator.Presenter.MainActivityPresenter;
+import com.example.palibinfamily.weatheragregator.Presenter.TipGenerator;
 import com.example.palibinfamily.weatheragregator.R;
 import com.example.palibinfamily.weatheragregator.View.MainActivity.Activities.ViewHelpers;
 import com.example.palibinfamily.weatheragregator.View.MainActivity.MainActivity;
@@ -77,6 +78,7 @@ public class MainView extends View {
             if (snapShot.getWindDirection() != null) {
                 extendedInfo.add(getResources().getString(R.string.getWindDirection) + snapShot.getWindDirection());
             }
+            extendedInfo.add(new TipGenerator().getTip(snapShot));
         }
 
 
@@ -212,11 +214,11 @@ public class MainView extends View {
             dr.draw(canvas);
 
             paintBlur.setColor(0xFF000000);
-            int textWidth = setTextSizeForHeight(paintBlur, (float) (width * 0.2), "" + snapShot.getTemperature() + "°С");
+            int textWidth = setTextSizeForHeight(paintBlur, (float) (width * 0.15), "" + snapShot.getTemperature() + "°С");
             canvas.drawText("" + snapShot.getTemperature() + "°С", (float) ((width / 2) - (textWidth / 2)), (float) (width * 0.7), paintBlur);
 
             paintNormal.setColor(0xFFFFFFFF);
-            textWidth = setTextSizeForHeight(paintNormal, (float) (width * 0.2), "" + snapShot.getTemperature() + "°С");
+            textWidth = setTextSizeForHeight(paintNormal, (float) (width * 0.15), "" + snapShot.getTemperature() + "°С");
             canvas.drawText("" + snapShot.getTemperature() + "°С", (float) ((width / 2) - (textWidth / 2)), (float) (width * 0.7), paintNormal);
 
             int positionY = (int) (width * 0.7);

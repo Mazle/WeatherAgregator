@@ -3,6 +3,7 @@ package com.example.palibinfamily.weatheragregator.View.PlaceSelection;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -38,11 +39,11 @@ public class PlaceSelection extends AppCompatActivity implements AdapterView.OnI
         switch (parent.getId()) {
             case R.id.spinner :{
                 locationItem selected = (locationItem) parent.getItemAtPosition(position);
-                Toast.makeText(getApplicationContext(), "country " + selected.name + " id " + selected.id, Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "countries " + selected.name + " id " + selected.id, Toast.LENGTH_LONG).show();
                 //http://www.gosigmaway.com/api/ca_api/api.php?type=getCities&countryId=181&stateId=3067
                 country = selected;
-                jsonLoader countryLoader = new jsonLoader();
-                countryLoader.execute("http://www.gosigmaway.com/api/ca_api/api.php?type=getStates&countryId="+country.id,"state");
+                jsonLoaderCity loader = new jsonLoaderCity();
+                loader.execute("https://vk.com/select_ajax.php?act=a_get_cities&country=" + country.id + "&str=$$$$$$","asd");
                 break;}
             case R.id.spinner2 :{
                 locationItem selected = (locationItem) parent.getItemAtPosition(position);
@@ -105,6 +106,75 @@ public class PlaceSelection extends AppCompatActivity implements AdapterView.OnI
         }
     }
 
+    private class jsonLoaderCity extends AsyncTask<String, Void, Void> {
+        private final String TAG = "CityLoader";
+        private ArrayList<locationItem> resultList = new ArrayList<>();
+        private String resultType;
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            //запустить индикацию загрузки
+        }
+        @Override
+        protected Void doInBackground(String... params) {
+            resultType = params[1];
+            URL gosigmaway = null; // URL to Parse
+            try {
+                gosigmaway = new URL(params[0]);
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            }
+            URLConnection connection = null;
+            try {
+                connection = gosigmaway.openConnection();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            JSONArray jObject = null;
+            try {
+                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                StringBuilder sb = new StringBuilder();
+                for (String line; (line = bufferedReader.readLine()) != null;) {
+                    sb.append(line);
+                }
+                jObject = new JSONArray(sb.toString());
+//                Log.d(TAG, "doInBackground: " + sb.toString());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            try {
+//                Log.d(TAG, "doInBackground: begin json array");
+//                JSONArray array = jObject.getJSONArray("countries");
+//                Log.d(TAG, "doInBackground: array: " + array.toString());
+                int len = jObject.length();
+                Log.d(TAG, "doInBackground: len = " + len);
+                for (int i = 0; i < len; i++) {
+                    Log.d(TAG, "doInBackground: i =" + i);
+
+//                    JSONArray json = array.getJSONArray(i);
+                    Object json = jObject.get(i);
+
+                    JSONArray jsonArr = new JSONArray(json.toString());
+
+                    Log.d(TAG, "doInBackground: " + jsonArr.getInt(0));
+                    Log.d(TAG, "doInBackground: " + jsonArr.getString(1));
+
+                    resultList.add(new locationItem(jsonArr.getString(1), jsonArr.getInt(0)));
+                    Log.d(TAG, "doInBackground: " + json.toString());
+
+                }
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+            return null;
+        }
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            setResultList(resultList,"city");
+        }
+    }
+
 
     private class jsonLoader extends AsyncTask<String, Void, Void> {
         private final String TAG = "CountryLoader";
@@ -132,25 +202,39 @@ public class PlaceSelection extends AppCompatActivity implements AdapterView.OnI
             }
             JSONObject jObject = null;
             try {
-                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(connection.getInputStream(),"Windows-1251"));
                 StringBuilder sb = new StringBuilder();
                 for (String line; (line = bufferedReader.readLine()) != null;) {
                     sb.append(line);
                 }
                 jObject = new JSONObject(sb.toString());
+//                Log.d(TAG, "doInBackground: " + sb.toString());
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
             try {
-                JSONArray array = jObject.getJSONArray("result");
+                Log.d(TAG, "doInBackground: begin json array");
+                JSONArray array = jObject.getJSONArray("countries");
+//                Log.d(TAG, "doInBackground: array: " + array.toString());
                 int len = array.length();
+                Log.d(TAG, "doInBackground: len = " + len);
                 for (int i = 0; i < len; i++) {
-                    JSONObject json = array.getJSONObject(i);
-                    resultList.add(new locationItem(json.getString("name").toString(), json.getInt("id")));
+                    Log.d(TAG, "doInBackground: i =" + i);
+
+//                    JSONArray json = array.getJSONArray(i);
+                    Object json = array.get(i);
+
+                    JSONArray jsonArr = new JSONArray(json.toString());
+
+                    Log.d(TAG, "doInBackground: " + jsonArr.getInt(0));
+                    Log.d(TAG, "doInBackground: " + jsonArr.getString(1));
+
+                    resultList.add(new locationItem(jsonArr.getString(1), jsonArr.getInt(0)));
+                    Log.d(TAG, "doInBackground: " + json.toString());
+
                 }
             }catch (Exception e){
-
+                e.printStackTrace();
             }
             return null;
         }
@@ -168,13 +252,13 @@ public class PlaceSelection extends AppCompatActivity implements AdapterView.OnI
         setContentView(R.layout.activity_place_selection);
         //http://www.gosigmaway.com/api/ca_api/api.php?type=getCities&countryId=181&stateId=3067
         jsonLoader countryLoader = new jsonLoader();
-        countryLoader.execute("http://www.gosigmaway.com/api/ca_api/api.php?type=getCountries","country");
+        countryLoader.execute("https://vk.com/select_ajax.php?act=a_get_countries","countries");
 
     }
 
     private void setResultList(ArrayList<locationItem> countries, String  resultType){
         switch (resultType){
-            case "country":{
+            case "countries":{
                 ArrayAdapter<locationItem> countryListAdapter = new ArrayAdapter<locationItem>(this,R.layout.support_simple_spinner_dropdown_item, countries);
                 countryListAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
                 countryListAdapter.notifyDataSetChanged();
