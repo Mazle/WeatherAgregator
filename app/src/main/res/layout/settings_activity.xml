@@ -79,18 +79,18 @@
                   android:text="@string/always" />
 
               <RadioButton
-                  android:id="@+id/onceADayRB"
-                  android:layout_width="wrap_content"
-                  android:layout_height="wrap_content"
-                  android:layout_weight="1"
-                  android:text="@string/once_a_day" />
-
-              <RadioButton
                   android:id="@+id/onceAHourRB"
                   android:layout_width="wrap_content"
                   android:layout_height="wrap_content"
                   android:layout_weight="1"
                   android:text="@string/once_a_hour" />
+
+              <RadioButton
+                  android:id="@+id/onceADayRB"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:layout_weight="1"
+                  android:text="@string/once_a_day" />
 
               <RadioButton
                   android:id="@+id/neverRB"

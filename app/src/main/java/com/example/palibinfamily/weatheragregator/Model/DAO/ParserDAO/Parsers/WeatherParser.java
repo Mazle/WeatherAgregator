@@ -41,7 +41,7 @@ public class WeatherParser {
     public void getUrl(String url){
         if (url != null){
             try {
-                doc = Jsoup.parse(new URL(url), 15000);
+                doc = Jsoup.parse(new URL(url), 1500);
                 Log.d(TAG, "getUrl: " + url);
             } catch (Exception e) {
 //                e.printStackTrace();

@@ -11,6 +11,7 @@ import com.example.palibinfamily.weatheragregator.Model.LocationProvider.Locator
 import com.example.palibinfamily.weatheragregator.Model.WeatherSnapshot;
 import com.example.palibinfamily.weatheragregator.MyApp;
 import com.example.palibinfamily.weatheragregator.Preferences;
+import com.example.palibinfamily.weatheragregator.R;
 import com.example.palibinfamily.weatheragregator.View.WeatherView;
 
 import java.time.LocalDate;
@@ -52,7 +53,7 @@ public class MainActivityPresenter implements WeatherAsyncLoaderClallbackListene
             locator.setListener(this);
             locator.getLocationName();
         }
-//        view.update(getWeatherValuesList());
+        //        view.update(getWeatherValuesList());
     }
 
     public ArrayList<WeatherSnapshot> getWeatherValuesList() {
@@ -228,22 +229,45 @@ public class MainActivityPresenter implements WeatherAsyncLoaderClallbackListene
         }
 
         private WeatherSnapshot averageToSnapshot(WeatherSnapshot snapshot){
+            SettingsPresenter settingsPresenter;
+            //TODO:  ШТА??? где я тут контекст возьму??
+            settingsPresenter = new SettingsPresenter(view.getViewContext().getApplicationContext());
             try {
-                snapshot.setTemperature(getIntegerAveragedValue(this.temperature));
-                snapshot.setWindSpeed(getIntegerAveragedValue(this.windSpeed));
+                if (settingsPresenter.getChoiceForPropertiy(R.id.temperature)) {
+                    snapshot.setTemperature(getIntegerAveragedValue(this.temperature));
+                }else{
+                    snapshot.setTemperature(Integer.MIN_VALUE);
+                }
+                if (settingsPresenter.getChoiceForPropertiy(R.id.windSpeed)) {
+                    snapshot.setWindSpeed(getIntegerAveragedValue(this.windSpeed));
+                }else {
+                    snapshot.setWindSpeed(Integer.MIN_VALUE);
+                }
                 //todo ЗАПЛАТКА.усреднить направление ветра
-                snapshot.setWindDirection("North");
+//                snapshot.setWindDirection("North");
                 //todo ЗАПЛАТКА.Усреднить дождь.
                 snapshot.setRaining(this.isRaining.get(0));
                 //todo ЗАПЛАТКА.усреднить снег
                 snapshot.setSnowing(this.isSnowing.get(0));
-                snapshot.setHumidity(getIntegerAveragedValue(this.humidity));
-                snapshot.setPressure(getIntegerAveragedValue(this.pressure));
+                if (settingsPresenter.getChoiceForPropertiy(R.id.hummidity)) {
+                    snapshot.setHumidity(getIntegerAveragedValue(this.humidity));
+                }else{
+                    snapshot.setHumidity(Integer.MIN_VALUE);
+                }
+                if (settingsPresenter.getChoiceForPropertiy(R.id.pressure)) {
+                    snapshot.setPressure(getIntegerAveragedValue(this.pressure));
+                }else{
+                    snapshot.setPressure(Integer.MIN_VALUE);
+                }
                 //todo ЗАПЛАТКА. усреднить облачность.
                 snapshot.setCloudCover("облачно");
                 //TODO: ЗАТЫЫЫЫЫЫЫЫЫЫЫЧКА на дату и ветер.
                 snapshot.setDate(this.date);
-                snapshot.setWindDirection(this.windDirection.get(0));
+                if (settingsPresenter.getChoiceForPropertiy(R.id.wind_direction)) {
+                    snapshot.setWindDirection(this.windDirection.get(0));
+                }else{
+                    snapshot.setWindDirection(null);
+                }
             }catch (Exception e){
 
             }
