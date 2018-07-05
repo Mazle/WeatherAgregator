@@ -47,7 +47,7 @@ public class TipGenerator {
         result.add(new filterItem(20,100,"Езжай на пикник"));
         result.add(new filterItem(-100,15,"Похолодало,\nвозьми с собой кота"));
         result.add(new filterItem(18,100,"Покажи себя морю"));
-        result.add(new filterItem(-100,100,"Плохой день?\n Возьмис собой бобра"));
+        result.add(new filterItem(-100,100,"Плохой день?\n Возьми с собой бобра"));
         result.add(new filterItem(-100,100,"Грустно? Заведи корову"));
         result.add(new filterItem(-100,17,"Ночью будет холодно,\nспите в обнимку"));
 

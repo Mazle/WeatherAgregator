@@ -64,14 +64,14 @@ public class MainView extends View {
         this.snapShot = snapShot;
         if (snapShot != null) {
             extendedInfo.clear();
-
-            if (snapShot.getHumidity() > Integer.MIN_VALUE) {
+            // TODO: костыли конечно, новремя неь
+            if ((snapShot.getHumidity() <=100)&&(snapShot.getHumidity() >=0)) {
                 extendedInfo.add(getResources().getString(R.string.getHumidity) + snapShot.getHumidity() + getResources().getString(R.string.getHumidityEnd));
             }
-            if (snapShot.getPressure() > Integer.MIN_VALUE) {
+            if ((snapShot.getPressure() <=10000)&&(snapShot.getPressure() >=0)) {
                 extendedInfo.add(getResources().getString(R.string.getPressure) + snapShot.getPressure() + getResources().getString(R.string.getPressureEnd));
             }
-            if (snapShot.getWindSpeed() > Integer.MIN_VALUE) {
+            if ((snapShot.getWindSpeed() <=1000)&&(snapShot.getWindSpeed() >=0)) {
                 extendedInfo.add(getResources().getString(R.string.getWindSpeed) + snapShot.getWindSpeed() + getResources().getString(R.string.getWindSpeedEnd));
             }
             if (snapShot.getWindDirection() != null) {

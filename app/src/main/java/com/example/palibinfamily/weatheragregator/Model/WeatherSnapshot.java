@@ -28,6 +28,7 @@ public class WeatherSnapshot implements Serializable{
     protected boolean isRaining;
     protected boolean isSnowing;
 
+
     public boolean isRaining() {
         return isRaining;
     }

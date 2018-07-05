@@ -324,11 +324,11 @@ public class MainActivityPresenter implements WeatherAsyncLoaderClallbackListene
         }
         //Todo ПРОВЕРИТЬ. Будет ли так работать Jenerick.
         private Integer getIntegerAveragedValue(ArrayList<Integer> list) {
-            Integer summ = 0;
+            Integer summ = 0;//Integer.MIN_VALUE;
             Integer num = 0;
             try {
                 for (Integer value : list) {
-                    if (value > Integer.MIN_VALUE) {
+                    if ((value <10000)&&(value > -1000)) {
                         summ = summ + value;
                         num++;
                     }
@@ -337,7 +337,7 @@ public class MainActivityPresenter implements WeatherAsyncLoaderClallbackListene
                 // ага, division by zero например =)
                 summ = summ / num;
             }catch (Exception e){
-
+                summ = Integer.MIN_VALUE;
             }
             return summ;
         }

@@ -120,7 +120,7 @@ public class ConfigHelpers {
         if (url == null){
             config.setUrl("https://yandex.ru/pogoda/213");
         } else {
-            config.setUrl("https://yandex.ru/pogoda/search?request=" + url + " 7 дней");
+            config.setUrl("https://yandex.ru" + url);
         }
 //        config.setUrl("https://www.gismeteo.ru" + url + "10-days/");
         //  html/body/div[1]/div[3]/div[2]/div/div[1]

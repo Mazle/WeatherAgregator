@@ -213,16 +213,26 @@ public class WeatherParser {
 //        }
 //        return result;
 //    }
-
+    private WeatherSnapshot getZeroSnapshot(){
+        WeatherSnapshot result = new WeatherSnapshot();
+        result.setSnowing(false);
+        result.setRaining(false);
+        result.setWindDirection("");
+        result.setTemperature(Integer.MAX_VALUE);
+        result.setHumidity(Integer.MAX_VALUE);
+        result.setPressure(Integer.MAX_VALUE);
+        result.setWindSpeed(Integer.MAX_VALUE);
+        return result;
+    }
 
     //@Override
     public WeatherSnapshot getWeather() {
-        WeatherSnapshot result = new WeatherSnapshot();
+        WeatherSnapshot result = getZeroSnapshot();
         String text;
 
         for (Map.Entry<String , WeatherParserConfig> configElement : config.getParameters().entrySet()){
 //            System.out.println(configElement.getKey() + ":" + configElement.getValue().getUrl());
-//            Log.d(TAG,configElement.getKey() + ":" + configElement.getValue().getUrl());
+            Log.d(TAG,configElement.getKey() + ":" + configElement.getValue().getUrl());
             if (configElement.getValue().getUrl() != null){
                 getUrl(configElement.getValue().getUrl());
             }
