@@ -45,7 +45,7 @@ public class WeatherService extends Service {
             public void run() {
                 for (int i = 1; i<=500; i++) {
                     Log.d(TAG, " !!!!!!!!!!!!!! i = " + i);
-                    showForegroundNotification("ЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫы");
+                    showForegroundNotification("ЫыЫыЫы ПОГОДА!! " + i);
                     try {
                         TimeUnit.SECONDS.sleep(5);
                     } catch (InterruptedException e) {

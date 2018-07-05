@@ -239,6 +239,14 @@ public class MainView extends View {
 
                 lineNumber++;
             }
+        }else{
+            paintBlur.setColor(0xFF000000);
+            int textWidth = setTextSizeForHeight(paintBlur, (float) (width * 0.07), "Получение данных");
+            canvas.drawText("Получение данных", (float) ((width / 2) - (textWidth / 2)), (float) (width * 0.7), paintBlur);
+
+            paintNormal.setColor(0xFFFFFFFF);
+            textWidth = setTextSizeForHeight(paintNormal, (float) (width * 0.07), "Получение данных");
+            canvas.drawText("Получение данных", (float) ((width / 2) - (textWidth / 2)), (float) (width * 0.7), paintNormal);
         }
     }
 
