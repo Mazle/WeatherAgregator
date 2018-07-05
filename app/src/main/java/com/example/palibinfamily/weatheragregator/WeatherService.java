@@ -13,6 +13,7 @@ import com.example.palibinfamily.weatheragregator.Presenter.MainActivityPresente
 import com.example.palibinfamily.weatheragregator.View.MainActivity.MainActivity;
 import com.example.palibinfamily.weatheragregator.View.WeatherView;
 
+import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 public class WeatherService extends Service {
@@ -20,6 +21,9 @@ public class WeatherService extends Service {
     private MainActivityPresenter servicePresenter = new MainActivityPresenter();
     private WeatherBinder binder = new WeatherBinder();
     private Preferences preferences;
+    private boolean finished = false;
+    private int countDown;
+
     public class WeatherBinder extends Binder{
         public WeatherService getService(WeatherView view){
             servicePresenter.setView(view);
@@ -43,11 +47,24 @@ public class WeatherService extends Service {
 //        preferences = new Preferences(getApplicationContext());
         new Thread(new Runnable() {
             public void run() {
-                for (int i = 1; i<=500; i++) {
-                    Log.d(TAG, " !!!!!!!!!!!!!! i = " + i);
-                    showForegroundNotification("ЫыЫыЫы ПОГОДА!! " + i);
+                while(!finished) {
+                    countDown--;
+                    if (countDown < 0){
+                        servicePresenter.downloadWeatherValues(7);
+                        countDown = 1440;
+                    }
+
+                    Log.d(TAG, " !!!!!!!!!!!!!!");
                     try {
-                        TimeUnit.SECONDS.sleep(5);
+                        String text = "Сейчас " + servicePresenter.getSnapshotFromDayNumber(0).getTemperature() + "°С";
+
+                        showForegroundNotification(text);
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+
+                    try {
+                        TimeUnit.SECONDS.sleep(10);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -89,5 +106,11 @@ public class WeatherService extends Service {
                 .setContentIntent(contentIntent)
                 .build();
         startForeground(NOTIFICATION_ID, notification);
+    }
+
+    @Override
+    public void onDestroy() {
+        finished = true;
+        super.onDestroy();
     }
 }

@@ -1,7 +1,6 @@
 package com.example.palibinfamily.weatheragregator.View.MainActivity.Activities.CustomViews;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -20,7 +19,6 @@ import com.example.palibinfamily.weatheragregator.Presenter.MainActivityPresente
 import com.example.palibinfamily.weatheragregator.Presenter.TipGenerator;
 import com.example.palibinfamily.weatheragregator.R;
 import com.example.palibinfamily.weatheragregator.View.MainActivity.Activities.ViewHelpers;
-import com.example.palibinfamily.weatheragregator.View.MainActivity.MainActivity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -80,9 +78,45 @@ public class MainView extends View {
                 extendedInfo.add(getResources().getString(R.string.getWindDirection) + snapShot.getWindDirection());
             }
             extendedInfo.add(new TipGenerator().getTip(snapShot));
+
+            Random random = new Random();
+            try {
+                if (snapShot.isRaining()) {
+                    switch (random.nextInt(3)) {
+                        case 0: {
+                            fon = ContextCompat.getDrawable(getContext(), R.drawable.rain_1);
+                            break;
+                        }
+                        case 1: {
+                            fon = ContextCompat.getDrawable(getContext(), R.drawable.rain_2);
+                            break;
+                        }
+                        case 2: {
+                            fon = ContextCompat.getDrawable(getContext(), R.drawable.rain_3);
+                            break;
+                        }
+                    }
+                } else {
+                    switch (random.nextInt(3)) {
+                        case 0: {
+                            fon = ContextCompat.getDrawable(getContext(), R.drawable.sun_1);
+                            break;
+                        }
+                        case 1: {
+                            fon = ContextCompat.getDrawable(getContext(), R.drawable.sun_2);
+                            break;
+                        }
+                        case 2: {
+                            fon = ContextCompat.getDrawable(getContext(), R.drawable.sun_3);
+                            break;
+                        }
+                    }
+                }
+            }catch (Exception e){
+                e.printStackTrace();
+                fon = ContextCompat.getDrawable(getContext(), R.drawable.img_1);
+            }
         }
-
-
     }
 
     private void loadIcons(){
@@ -100,21 +134,7 @@ public class MainView extends View {
         paintSmallBlur.setShadowLayer(4, 1, 1, Color.BLACK);
         setLayerType(LAYER_TYPE_SOFTWARE, paintSmallBlur);
 
-        Random random = new Random();
-        switch (random.nextInt(4)){
-            case 0:{
-                fon = ContextCompat.getDrawable(getContext(), R.drawable.img_1);
-                break;}
-            case 1:{
-                fon = ContextCompat.getDrawable(getContext(), R.drawable.img_2);
-                break;}
-            case 2:{
-                fon = ContextCompat.getDrawable(getContext(), R.drawable.img_3);
-                break;}
-            case 3:{
-                fon = ContextCompat.getDrawable(getContext(), R.drawable.img_4);
-                break;}
-        }
+        fon = ContextCompat.getDrawable(getContext(), R.drawable.img_1);
     }
 
     public MainView(Context context, int dayNumber) {
