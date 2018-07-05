@@ -88,7 +88,11 @@ public class MainScreen extends Fragment implements SwipeRefreshLayout.OnRefresh
 //        SwipeRefreshLayout mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.refresh);
         // начинаем показывать прогресс
         mSwipeRefreshLayout.setRefreshing(true);
-        MainActivity.getPresenter().downloadWeatherValues(7);
+        try {
+            MainActivity.getPresenter().downloadWeatherValues(7);
+        }catch (Exception e){
+
+        }
         // ждем 3 секунды и прячем прогресс
         mSwipeRefreshLayout.postDelayed(new Runnable() {
             @Override
@@ -117,7 +121,7 @@ public class MainScreen extends Fragment implements SwipeRefreshLayout.OnRefresh
 //                    + " must implement OnFragmentInteractionListener");
 //        }
 //    }
-
+//
 //    @Override
 //    public void onDetach() {
 //        super.onDetach();

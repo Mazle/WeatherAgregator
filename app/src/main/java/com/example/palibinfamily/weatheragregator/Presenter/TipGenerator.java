@@ -141,7 +141,7 @@ public class TipGenerator {
                 matchedTips.add(item.text);
             }
         }
-        String result = "=)";
+        String result = "";
         Random random = new Random();
         try{
             result = matchedTips.get(random.nextInt(matchedTips.size()));

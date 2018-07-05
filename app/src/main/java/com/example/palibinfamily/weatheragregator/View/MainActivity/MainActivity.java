@@ -166,20 +166,20 @@ public class MainActivity extends AppCompatActivity implements WeatherView, View
 
 //        daysBar.setWeatherDtata(weatherList);
 
-        Geocoder geocoder = new Geocoder(getApplicationContext(),Locale.getDefault());
-        List<Address> addresses = new ArrayList<>();
-        try {
-            addresses = geocoder.getFromLocation(54.3147081,48.3618814,5);//uln
-//            addresses = geocoder.getFromLocation(54.6086886,48.9230989,5);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        String res = addresses.get(0).getLocality() + " " + addresses.get(0).getAdminArea() + " " + addresses.get(0).getCountryName() ;
+//        Geocoder geocoder = new Geocoder(getApplicationContext(),Locale.getDefault());
+//        List<Address> addresses = new ArrayList<>();
+//        try {
+//            addresses = geocoder.getFromLocation(54.3147081,48.3618814,5);//uln
+////            addresses = geocoder.getFromLocation(54.6086886,48.9230989,5);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//
+//        String res = addresses.get(0).getLocality() + " " + addresses.get(0).getAdminArea() + " " + addresses.get(0).getCountryName() ;
 //        for (Address a:addresses){
 //            res += a.getLocality();
 //        }
-        Log.d(LOG_TAG, "Geocoder: " + res);
+//        Log.d(LOG_TAG, "Geocoder: " + res);
 
         Log.d(LOG_TAG, "MainActivity created");
     }
@@ -293,6 +293,8 @@ public class MainActivity extends AppCompatActivity implements WeatherView, View
         if (mainView != null) {
             mainView.postInvalidate();
         }
+        mViewPager = (ViewPager) findViewById(R.id.container);
+        mViewPager.getAdapter().notifyDataSetChanged();
     }
 
     @Override
@@ -311,6 +313,12 @@ public class MainActivity extends AppCompatActivity implements WeatherView, View
      * one of the sections/tabs/pages.
      */
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
+
+        @Override
+        public int getItemPosition(Object object) {
+            // POSITION_NONE makes it possible to reload the PagerAdapter
+            return POSITION_NONE;
+        }
 
         public SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
@@ -349,5 +357,16 @@ public class MainActivity extends AppCompatActivity implements WeatherView, View
             unbindService(sConn);
         }
         super.onDestroy();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        try {
+            presenter.downloadWeatherValues(7);
+        }catch (Exception e){
+
+        }
+        Log.d(LOG_TAG, "onResume");
     }
 }

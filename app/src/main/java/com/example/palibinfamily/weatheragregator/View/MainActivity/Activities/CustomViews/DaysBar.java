@@ -155,9 +155,13 @@ public class DaysBar extends View {
                     setTextSizeForWidth(paint, (width / 14), "12");
                     setTextSizeForWidth(paintSmallBlur, (width / 14), "12");
 
-                    canvas.drawText("" + snap.getTemperature(), (width / 7) * (i) + 25, (float) (height * 0.45), paintSmallBlur);
-                    canvas.drawText("" + snap.getTemperature(), (width / 7) * (i) + 25, (float) (height * 0.45), paint);
+                    int temperature = snap.getTemperature();
 
+                    if ((temperature > -100)&&(temperature < 100)) {
+
+                        canvas.drawText("" + temperature, (width / 7) * (i) + 25, (float) (height * 0.45), paintSmallBlur);
+                        canvas.drawText("" + temperature, (width / 7) * (i) + 25, (float) (height * 0.45), paint);
+                    }
                     canvas.drawText("" + ViewHelpers.days[dayOfWeek], (width / 7) * (i) + (width / 28), (float) (height * 0.65), paintSmallBlur);
                     canvas.drawText("" + ViewHelpers.days[dayOfWeek], (width / 7) * (i) + (width / 28), (float) (height * 0.65), paint);
 
@@ -168,13 +172,37 @@ public class DaysBar extends View {
         }
     }
 
+    private int measureDimension(int desiredSize, int measureSpec) {
+        int result;
+        int specMode = MeasureSpec.getMode(measureSpec);
+        int specSize = MeasureSpec.getSize(measureSpec);
+
+        if (specMode == MeasureSpec.EXACTLY) {
+            result = specSize;
+        } else {
+            result = desiredSize;
+            if (specMode == MeasureSpec.AT_MOST) {
+                result = Math.min(result, specSize);
+            }
+        }
+
+        if (result < desiredSize){
+            Log.e("ChartView", "The view is too small, the content might get cut");
+        }
+        return result;
+    }
+
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-//        this.width = widthMeasureSpec;
-//        this.height = 100;
-        Log.d(TAG,"width : " + width);
-        setMeasuredDimension(widthMeasureSpec,300);
+        Log.d(TAG,"width : ");
+        Log.v("Chart onMeasure w", MeasureSpec.toString(widthMeasureSpec));
+        Log.v("Chart onMeasure h", MeasureSpec.toString(heightMeasureSpec));
+
+        int desiredWidth = getSuggestedMinimumWidth() + getPaddingLeft() + getPaddingRight();
+        int desiredHeight = getSuggestedMinimumHeight() + getPaddingTop() + getPaddingBottom();
+
+        setMeasuredDimension(measureDimension(desiredWidth, widthMeasureSpec), (int) (0.416 * measureDimension(desiredWidth, widthMeasureSpec)));
     }
 
     @Override

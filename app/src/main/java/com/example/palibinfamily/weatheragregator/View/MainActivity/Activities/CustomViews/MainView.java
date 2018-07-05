@@ -212,15 +212,18 @@ public class MainView extends View {
 
             dr.setBounds((width / 4), (width / 20), (3 * width / 4), (width / 2) + (width / 20));
             dr.draw(canvas);
+            int textWidth;
+            int temperature = snapShot.getTemperature();
 
-            paintBlur.setColor(0xFF000000);
-            int textWidth = setTextSizeForHeight(paintBlur, (float) (width * 0.15), "" + snapShot.getTemperature() + "°С");
-            canvas.drawText("" + snapShot.getTemperature() + "°С", (float) ((width / 2) - (textWidth / 2)), (float) (width * 0.7), paintBlur);
+            if ((temperature > -100)&&(temperature < 100)) {
+                paintBlur.setColor(0xFF000000);
+                textWidth = setTextSizeForHeight(paintBlur, (float) (width * 0.15), "" + temperature + "°С");
+                canvas.drawText("" + temperature + "°С", (float) ((width / 2) - (textWidth / 2)), (float) (width * 0.7), paintBlur);
 
-            paintNormal.setColor(0xFFFFFFFF);
-            textWidth = setTextSizeForHeight(paintNormal, (float) (width * 0.15), "" + snapShot.getTemperature() + "°С");
-            canvas.drawText("" + snapShot.getTemperature() + "°С", (float) ((width / 2) - (textWidth / 2)), (float) (width * 0.7), paintNormal);
-
+                paintNormal.setColor(0xFFFFFFFF);
+                textWidth = setTextSizeForHeight(paintNormal, (float) (width * 0.15), "" + temperature + "°С");
+                canvas.drawText("" + temperature + "°С", (float) ((width / 2) - (textWidth / 2)), (float) (width * 0.7), paintNormal);
+            }
             int positionY = (int) (width * 0.7);
             int stepY = (int) (width * 0.09);
             int positionX = 0;

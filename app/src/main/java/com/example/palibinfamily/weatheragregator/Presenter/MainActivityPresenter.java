@@ -109,6 +109,7 @@ public class MainActivityPresenter implements WeatherAsyncLoaderClallbackListene
     //todo Внедрить зависимости выдачи в активити от Локализации, Выбранных параметров отображения погоды, языка
     public void downloadWeatherValues(int daysAmount) {
         //Парсим сайты, выбранные в настройках
+        Log.d(TAG, "downloadWeatherValues");
         initContentList(daysAmount);
         //усредняем результаты
         getAverageValuesFromAllSnapshotsByDates(contentMapFromSites);
@@ -243,6 +244,7 @@ public class MainActivityPresenter implements WeatherAsyncLoaderClallbackListene
         if (view != null) {
             try {
                 view.updateLocation(newLocation);
+                Log.d(TAG, "updateLocation:view");
             }catch (Exception e){
                 Log.d(TAG, "updateLocation: no view");
             }
