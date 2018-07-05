@@ -1,11 +1,15 @@
 package com.example.palibinfamily.weatheragregator.View.Settings;
 
+import android.content.ComponentName;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.FrameLayout;
@@ -16,23 +20,55 @@ import com.example.palibinfamily.weatheragregator.Preferences;
 import com.example.palibinfamily.weatheragregator.Presenter.SettingsPresenter;
 import com.example.palibinfamily.weatheragregator.R;
 import com.example.palibinfamily.weatheragregator.View.MainActivity.MainActivity;
+import com.example.palibinfamily.weatheragregator.WeatherService;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import static com.example.palibinfamily.weatheragregator.View.MainActivity.MainActivity.createExplicitFromImplicitIntent;
+
 public class SettingsActivity extends AppCompatActivity {
+    boolean bound = false;
+    ServiceConnection sConn;
+    Intent intent;
+
     HashMap<String,CheckBox> dynamicCheckBoxes;
     SettingsPresenter presenter;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.settings_activity);
+
+
+        intent = createExplicitFromImplicitIntent(this,new Intent("com.example.palibinfamily.weatheragregator"));
+        sConn = new ServiceConnection() {
+            final String TAG = "ServiceConnection";
+            public void onServiceConnected(ComponentName name, IBinder binder) {
+                Log.d(TAG, "SettingsActivity onServiceConnected");
+                try {
+                    presenter = new SettingsPresenter(((WeatherService.WeatherBinder) binder).getService());
+                    LinearLayout sitesLinearLayout = (LinearLayout) findViewById(R.id.sitesLinearLayout);
+                    dynamicCheckBoxes = insertNewCheckBoxes(presenter.getSitesTitlesList(),sitesLinearLayout);
+                    insertToolbar();
+                    checkChoosenWeatherProperties();
+                    bound = true;
+                }catch (Exception e){
+                    Log.d(TAG, "onServiceConnected: getServicePresenter fail");
+                }
+            }
+
+            public void onServiceDisconnected(ComponentName name) {
+                Log.d(TAG, "SettingsActivity onServiceDisconnected");
+                bound = false;
+            }
+        };
+        bindService(intent, sConn, BIND_AUTO_CREATE);
         //todo ВОПРОС. Чем страшно получать applicationContext?
-        presenter = new SettingsPresenter(this.getApplicationContext());
-        LinearLayout sitesLinearLayout = (LinearLayout) findViewById(R.id.sitesLinearLayout);
-        dynamicCheckBoxes = insertNewCheckBoxes(presenter.getSitesTitlesList(),sitesLinearLayout);
-        insertToolbar();
-        checkChoosenWeatherProperties();
+//        presenter = new SettingsPresenter(this.getApplicationContext());
+//        LinearLayout sitesLinearLayout = (LinearLayout) findViewById(R.id.sitesLinearLayout);
+//        dynamicCheckBoxes = insertNewCheckBoxes(presenter.getSitesTitlesList(),sitesLinearLayout);
+//        insertToolbar();
+//        checkChoosenWeatherProperties();
     }
 
 
@@ -105,5 +141,13 @@ public class SettingsActivity extends AppCompatActivity {
 
     public void onWeatherPropertyClick(View view) {
         presenter.onWeatherPropertyClick(view);
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (bound) {
+            unbindService(sConn);
+        }
+        super.onDestroy();
     }
 }

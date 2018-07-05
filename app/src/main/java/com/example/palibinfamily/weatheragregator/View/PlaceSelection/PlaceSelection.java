@@ -28,7 +28,7 @@ import java.net.URLConnection;
 import java.util.ArrayList;
 
 public class PlaceSelection extends AppCompatActivity implements AdapterView.OnItemSelectedListener, View.OnClickListener{
-
+    private final String TAG = "PlaceSelection";
     // country spinner
     private locationItem country;
     private locationItem state;
@@ -252,6 +252,7 @@ public class PlaceSelection extends AppCompatActivity implements AdapterView.OnI
         setContentView(R.layout.activity_place_selection);
         //http://www.gosigmaway.com/api/ca_api/api.php?type=getCities&countryId=181&stateId=3067
         jsonLoader countryLoader = new jsonLoader();
+        Log.d(TAG, "onCreate: parse " + "https://vk.com/select_ajax.php?act=a_get_countries");
         countryLoader.execute("https://vk.com/select_ajax.php?act=a_get_countries","countries");
 
     }

@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.IBinder;
@@ -39,6 +41,7 @@ import com.example.palibinfamily.weatheragregator.R;
 import com.example.palibinfamily.weatheragregator.View.PlaceSelection.PlaceSelection;
 import com.example.palibinfamily.weatheragregator.View.Settings.SettingsActivity;
 import com.example.palibinfamily.weatheragregator.View.WeatherView;
+import com.example.palibinfamily.weatheragregator.WeatherService;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -122,12 +125,17 @@ public class MainActivity extends AppCompatActivity implements WeatherView, View
 //            }
 //        });
 
-        intent = new Intent("com.example.darkness.servicetest");
-
+        intent = createExplicitFromImplicitIntent(this,new Intent("com.example.palibinfamily.weatheragregator"));
         sConn = new ServiceConnection() {
+            final String TAG = "ServiceConnection";
             public void onServiceConnected(ComponentName name, IBinder binder) {
                 Log.d(LOG_TAG, "MainActivity onServiceConnected");
-                bound = true;
+                try {
+                    presenter = ((WeatherService.WeatherBinder) binder).getService(MainActivity.this).getServicePresenter();
+                    bound = true;
+                }catch (Exception e){
+                    Log.d(TAG, "onServiceConnected: getServicePresenter fail");
+                }
             }
 
             public void onServiceDisconnected(ComponentName name) {
@@ -142,8 +150,11 @@ public class MainActivity extends AppCompatActivity implements WeatherView, View
 
         DaysBar daysBar = findViewById(R.id.bottomDaysBar);
         daysBar.setViewPager(mViewPager);
+
         Log.d(LOG_TAG, "MainActivitypresenter beforecreated");
-        presenter = new MainActivityPresenter(this);
+        startService(intent);
+        bindService(intent, sConn, BIND_AUTO_CREATE);
+//        presenter = new MainActivityPresenter(this);
         Log.d(LOG_TAG, "MainActivitypresenter aftercreated");
 //        weatherList = presenter.getWeatherValuesList();
 //        weatherList.sort(new Comparator<WeatherSnapshot>() {
@@ -173,6 +184,30 @@ public class MainActivity extends AppCompatActivity implements WeatherView, View
         Log.d(LOG_TAG, "MainActivity created");
     }
 
+    public static Intent createExplicitFromImplicitIntent(Context context, Intent implicitIntent) {
+        // Retrieve all services that can match the given intent
+        PackageManager pm = context.getPackageManager();
+        List<ResolveInfo> resolveInfo = pm.queryIntentServices(implicitIntent, 0);
+
+        // Make sure only one match was found
+        if (resolveInfo == null || resolveInfo.size() != 1) {
+            return null;
+        }
+
+        // Get component info and create ComponentName
+        ResolveInfo serviceInfo = resolveInfo.get(0);
+        String packageName = serviceInfo.serviceInfo.packageName;
+        String className = serviceInfo.serviceInfo.name;
+        ComponentName component = new ComponentName(packageName, className);
+
+        // Create a new intent. Use the old one for extras and such reuse
+        Intent explicitIntent = new Intent(implicitIntent);
+
+        // Set the component to be explicit
+        explicitIntent.setComponent(component);
+
+        return explicitIntent;
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -306,5 +341,13 @@ public class MainActivity extends AppCompatActivity implements WeatherView, View
             // Show 3 total pages.
             return 7;
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (bound) {
+            unbindService(sConn);
+        }
+        super.onDestroy();
     }
 }

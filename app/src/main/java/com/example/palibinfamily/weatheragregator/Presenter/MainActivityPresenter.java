@@ -42,6 +42,33 @@ public class MainActivityPresenter implements WeatherAsyncLoaderClallbackListene
     private WeatherView view;
     private String location;
 
+    public MainActivityPresenter() {
+        this.view = null;
+        Log.d(TAG, "MainActivityPresenter: ");
+        //сначала узнаем место. TODO: порыться в настройках
+
+        if (location == null){
+            Locator locator = new Locator();
+            locator.setListener(this);
+            locator.getLocationName();
+        }
+        //        view.update(getWeatherValuesList());
+    }
+
+    public WeatherView getView() {
+        return view;
+    }
+
+    public void setView(WeatherView view) {
+        this.view = view;
+        try {
+            view.updateLocation(location);
+            view.update(getWeatherValuesList());
+        }catch (Exception e){
+            Log.d(TAG, "setView: no view");
+        }
+    }
+
     public MainActivityPresenter(WeatherView view) {
         this.view = view;
         //todo добавить настройку количества дней обзора
@@ -95,7 +122,14 @@ public class MainActivityPresenter implements WeatherAsyncLoaderClallbackListene
     }
     //Дает список выбранных в настройках сайтов в качестве источников
     private ArrayList<String> getSiteTitlesFromPreferences() {
-        ArrayList<String> siteTitles = ((MyApp)view.getViewContext()).getPreferences().getCheckedTitles();
+        ArrayList<String> siteTitles = null;
+        if (view != null) {
+            try {
+                siteTitles = ((MyApp) view.getViewContext()).getPreferences().getCheckedTitles();
+            }catch (Exception e){
+                Log.d(TAG, "getSiteTitlesFromPreferences: no view");
+            }
+        }
         return siteTitles;
     }
     //Создает map по датам, заполняя значения list'ом из прогнозов по текущей дате из разных сайтов
@@ -188,7 +222,7 @@ public class MainActivityPresenter implements WeatherAsyncLoaderClallbackListene
                 try {
                     view.update(getWeatherValuesList());
                 }catch (Exception e){
-
+                    Log.d(TAG, "updateData: no view");
                 }
             }
 //            view.update(tmp);
@@ -201,8 +235,18 @@ public class MainActivityPresenter implements WeatherAsyncLoaderClallbackListene
     public void updateLocation(String newLocation) {
         this.location = newLocation;
         //TODO: перекачть погоду
-        downloadWeatherValues(7);
-        view.updateLocation(newLocation);
+        try {
+            downloadWeatherValues(7);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        if (view != null) {
+            try {
+                view.updateLocation(newLocation);
+            }catch (Exception e){
+                Log.d(TAG, "updateLocation: no view");
+            }
+        }
     }
 
     //класс, представляющий собой WeatherSnapshot, только в качестве полей - arrayList со значениями Полей других WeatherSnapshot
@@ -231,45 +275,48 @@ public class MainActivityPresenter implements WeatherAsyncLoaderClallbackListene
         private WeatherSnapshot averageToSnapshot(WeatherSnapshot snapshot){
             SettingsPresenter settingsPresenter;
             //TODO:  ШТА??? где я тут контекст возьму??
-            settingsPresenter = new SettingsPresenter(view.getViewContext().getApplicationContext());
-            try {
-                if (settingsPresenter.getChoiceForPropertiy(R.id.temperature)) {
-                    snapshot.setTemperature(getIntegerAveragedValue(this.temperature));
-                }else{
-                    snapshot.setTemperature(Integer.MIN_VALUE);
-                }
-                if (settingsPresenter.getChoiceForPropertiy(R.id.windSpeed)) {
-                    snapshot.setWindSpeed(getIntegerAveragedValue(this.windSpeed));
-                }else {
-                    snapshot.setWindSpeed(Integer.MIN_VALUE);
-                }
-                //todo ЗАПЛАТКА.усреднить направление ветра
-//                snapshot.setWindDirection("North");
-                //todo ЗАПЛАТКА.Усреднить дождь.
-                snapshot.setRaining(this.isRaining.get(0));
-                //todo ЗАПЛАТКА.усреднить снег
-                snapshot.setSnowing(this.isSnowing.get(0));
-                if (settingsPresenter.getChoiceForPropertiy(R.id.hummidity)) {
-                    snapshot.setHumidity(getIntegerAveragedValue(this.humidity));
-                }else{
-                    snapshot.setHumidity(Integer.MIN_VALUE);
-                }
-                if (settingsPresenter.getChoiceForPropertiy(R.id.pressure)) {
-                    snapshot.setPressure(getIntegerAveragedValue(this.pressure));
-                }else{
-                    snapshot.setPressure(Integer.MIN_VALUE);
-                }
-                //todo ЗАПЛАТКА. усреднить облачность.
-                snapshot.setCloudCover("облачно");
-                //TODO: ЗАТЫЫЫЫЫЫЫЫЫЫЫЧКА на дату и ветер.
-                snapshot.setDate(this.date);
-                if (settingsPresenter.getChoiceForPropertiy(R.id.wind_direction)) {
-                    snapshot.setWindDirection(this.windDirection.get(0));
-                }else{
-                    snapshot.setWindDirection(null);
-                }
-            }catch (Exception e){
+            if (view != null) {
+                try {
+                    settingsPresenter = new SettingsPresenter(view.getViewContext().getApplicationContext());
 
+                    if (settingsPresenter.getChoiceForPropertiy(R.id.temperature)) {
+                        snapshot.setTemperature(getIntegerAveragedValue(this.temperature));
+                    } else {
+                        snapshot.setTemperature(Integer.MIN_VALUE);
+                    }
+                    if (settingsPresenter.getChoiceForPropertiy(R.id.windSpeed)) {
+                        snapshot.setWindSpeed(getIntegerAveragedValue(this.windSpeed));
+                    } else {
+                        snapshot.setWindSpeed(Integer.MIN_VALUE);
+                    }
+                    //todo ЗАПЛАТКА.усреднить направление ветра
+//                snapshot.setWindDirection("North");
+                    //todo ЗАПЛАТКА.Усреднить дождь.
+                    snapshot.setRaining(this.isRaining.get(0));
+                    //todo ЗАПЛАТКА.усреднить снег
+                    snapshot.setSnowing(this.isSnowing.get(0));
+                    if (settingsPresenter.getChoiceForPropertiy(R.id.hummidity)) {
+                        snapshot.setHumidity(getIntegerAveragedValue(this.humidity));
+                    } else {
+                        snapshot.setHumidity(Integer.MIN_VALUE);
+                    }
+                    if (settingsPresenter.getChoiceForPropertiy(R.id.pressure)) {
+                        snapshot.setPressure(getIntegerAveragedValue(this.pressure));
+                    } else {
+                        snapshot.setPressure(Integer.MIN_VALUE);
+                    }
+                    //todo ЗАПЛАТКА. усреднить облачность.
+                    snapshot.setCloudCover("облачно");
+                    //TODO: ЗАТЫЫЫЫЫЫЫЫЫЫЫЧКА на дату и ветер.
+                    snapshot.setDate(this.date);
+                    if (settingsPresenter.getChoiceForPropertiy(R.id.wind_direction)) {
+                        snapshot.setWindDirection(this.windDirection.get(0));
+                    } else {
+                        snapshot.setWindDirection(null);
+                    }
+                } catch (Exception e) {
+                    Log.d(TAG, "averageToSnapshot: no view");
+                }
             }
         return snapshot;
         }
