@@ -37,19 +37,19 @@ public class TipGenerator {
 
     public static ArrayList<filterItem> getAllTips(){
         ArrayList<filterItem> result = new ArrayList<>();
-        result.add(new filterItem(-100,100,"Не выспался, возьми подушку с собой"));
+        result.add(new filterItem(-100,100,"Не выспался?\nВозьми подушку с собой"));
         result.add(new filterItem(-100,100,"Заряди телефон"));
         result.add(new filterItem(-100,100,"Время чая"));
         result.add(new filterItem(-100,100,"А вы сегодня улыбались?"));
         result.add(new filterItem(25,100,"Что взять на пляж?"));
-        result.add(new filterItem(-100,100,"Наслаждайтесь каждым мгновеньем"));
+        result.add(new filterItem(-100,100,"Наслаждайтесь каждым\nмгновеньем"));
         result.add(new filterItem(-100,100,"Время чая"));
         result.add(new filterItem(20,100,"Езжай на пикник"));
-        result.add(new filterItem(-100,15,"Похолодало, возьми с собой кота"));
+        result.add(new filterItem(-100,15,"Похолодало,\nвозьми с собой кота"));
         result.add(new filterItem(18,100,"Покажи себя морю"));
-        result.add(new filterItem(-100,100,"Плохой день? возьми с собой бобра)"));
-        result.add(new filterItem(-100,100,"Грусто? Заведи корову"));
-        result.add(new filterItem(-100,17,"Ночью будет холодно, спите в обнимку"));
+        result.add(new filterItem(-100,100,"Плохой день?\n Возьмис собой бобра"));
+        result.add(new filterItem(-100,100,"Грустно? Заведи корову"));
+        result.add(new filterItem(-100,17,"Ночью будет холодно,\nспите в обнимку"));
 
 
         return result;

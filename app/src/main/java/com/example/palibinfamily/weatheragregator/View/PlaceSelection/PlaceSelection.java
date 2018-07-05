@@ -70,6 +70,7 @@ public class PlaceSelection extends AppCompatActivity implements AdapterView.OnI
     @Override
     public void onClick(View v) {
         MainActivity.getPresenter().updateLocation(country.name + " " + city.name);
+        finish();
     }
 
     private class locationItem{

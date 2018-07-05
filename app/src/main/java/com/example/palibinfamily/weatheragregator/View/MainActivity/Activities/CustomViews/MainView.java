@@ -1,6 +1,7 @@
 package com.example.palibinfamily.weatheragregator.View.MainActivity.Activities.CustomViews;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -229,17 +230,26 @@ public class MainView extends View {
             int positionX = 0;
             int lineNumber = 0;
             paintSmallBlur.setColor(0xFF000000);
+            textWidth = setTextSizeForHeight(paintSmallBlur, (float) (width * 0.05), "TEXT");
+            textWidth = setTextSizeForHeight(paintNormal, (float) (width * 0.05), "TEXT");
             for (String info:extendedInfo){
-                textWidth = setTextSizeForHeight(paintSmallBlur, (float) (width * 0.07), info);
-                textWidth = setTextSizeForHeight(paintNormal, (float) (width * 0.07), info);
 
-                positionX = (width / 2) - (textWidth / 2);
-                positionY = positionY + stepY;
-                paintNormal.setColor(0xFFFFFFFF);
+                String[] lines = info.split("\n");
 
-                canvas.drawText(info, positionX, positionY, paintSmallBlur);
-                canvas.drawText(info, positionX, positionY, paintNormal);
+                for (int lineNum = 0;lineNum < lines.length; lineNum++) {
 
+                    String lineInfo = lines[lineNum];
+                    Rect bounds = new Rect();
+                    paintNormal.getTextBounds(info, 0, lineInfo.length(), bounds);
+                    textWidth = bounds.width();
+
+                    positionX = (width / 2) - (textWidth / 2);
+                    positionY = positionY + stepY;
+                    paintNormal.setColor(0xFFFFFFFF);
+
+                    canvas.drawText(lineInfo, positionX, positionY, paintSmallBlur);
+                    canvas.drawText(lineInfo, positionX, positionY, paintNormal);
+                }
                 lineNumber++;
             }
         }else{
