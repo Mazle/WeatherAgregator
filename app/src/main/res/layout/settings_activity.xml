@@ -160,6 +160,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:text="@string/temperature"
+        android:onClick="onWeatherPropertyClick"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/divider5" />
 
@@ -170,6 +171,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:text="@string/pressure"
+        android:onClick="onWeatherPropertyClick"
         app:layout_constraintStart_toEndOf="@+id/temperature"
         app:layout_constraintTop_toTopOf="@+id/divider5" />
 
@@ -180,6 +182,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:text="@string/hummidity"
+        android:onClick="onWeatherPropertyClick"
         app:layout_constraintStart_toEndOf="@+id/pressure"
         app:layout_constraintTop_toTopOf="@+id/divider5" />
 
@@ -190,6 +193,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:text="@string/wind_speed"
+        android:onClick="onWeatherPropertyClick"
         app:layout_constraintStart_toEndOf="@+id/wind_direction"
         app:layout_constraintTop_toBottomOf="@+id/temperature" />
 
@@ -200,6 +204,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:text="@string/wind_direction"
+        android:onClick="onWeatherPropertyClick"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/temperature" />
 
@@ -210,6 +215,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="4dp"
         android:text="@string/precipitation"
+        android:onClick="onWeatherPropertyClick"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/wind_direction" />
 
